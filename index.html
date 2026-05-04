@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire Blanc PSPO I V2 — Product·AI Consulting</title>
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   CSS — Identique à la V1 + nouvelles classes V2
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --navy: #2D2B6B;
+  --navy-dk: #1E1C52;
+  --purple: #3D3B8E;
+  --purple-dk: #2A285F;
+  --teal: #00B2B2;
+  --teal-lt: #E0F5F5;
+  --white: #FFFFFF;
+  --gray-lt: #F3F4F6;
+  --gray-bdr: #E5E7EB;
+  --gray: #6B7280;
+  --gold: #F59E0B;
+  --green: #10B981;
+  --red: #EF4444;
+  --text: #1F2937;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8; color: var(--text); }
+
+/* ── ÉCRAN DE DÉMARRAGE ── */
+#startScreen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, var(--navy-dk) 0%, var(--purple-dk) 100%);
+}
+.start-brand { font-size: 11px; font-weight: 700; color: var(--teal); letter-spacing: 3px; margin-bottom: 24px; }
+.start-title { font-size: 42px; font-weight: 900; color: white; text-align: center; margin-bottom: 8px; }
+.start-title span { color: var(--teal); }
+.start-sub { font-size: 15px; color: #8B8ECA; text-align: center; margin-bottom: 48px; font-style: italic; }
+.start-modes { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
+.mode-card {
+  background: rgba(255,255,255,0.06);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 32px 28px;
+  width: 280px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.mode-card:hover { border-color: var(--teal); background: rgba(0,178,178,0.08); transform: translateY(-3px); }
+.mode-card.selected { border-color: var(--teal); background: rgba(0,178,178,0.12); }
+.mode-icon { font-size: 40px; margin-bottom: 16px; }
+.mode-name { font-size: 18px; font-weight: 800; color: white; margin-bottom: 8px; }
+.mode-desc { font-size: 13px; color: #8B8ECA; line-height: 1.5; }
+.start-btn {
+  background: var(--teal);
+  color: var(--navy-dk);
+  font-weight: 800;
+  font-size: 16px;
+  padding: 16px 48px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 20px;
+}
+.start-btn:hover { background: #00CECE; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,178,178,0.3); }
+.start-stats { display: flex; gap: 32px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+.start-stat { text-align: center; }
+.start-stat .n { font-size: 28px; font-weight: 900; color: var(--teal); }
+.start-stat .l { font-size: 11px; color: #8B8ECA; letter-spacing: 1px; }
+
+/* ── HEADER ── */
+.header { background: var(--navy-dk); color: white; padding: 0; position: relative; overflow: hidden; }
+.header-inner { max-width: 1100px; margin: 0 auto; padding: 24px 40px; position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.header::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--teal); }
+.header::after { content: ''; position: absolute; right: -60px; top: -60px; width: 200px; height: 200px; background: var(--purple); border-radius: 50%; opacity: 0.3; }
+.header-left .brand { font-size: 10px; font-weight: 700; color: var(--teal); letter-spacing: 3px; margin-bottom: 4px; }
+.header-left h1 { font-size: 24px; font-weight: 800; color: white; }
+.header-left h1 span { color: var(--teal); }
+.header-left p { font-size: 12px; color: #8B8ECA; font-style: italic; margin-top: 2px; }
+.meta-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.meta-badge { background: var(--purple); border-radius: 6px; padding: 5px 12px; font-size: 11px; font-weight: 700; color: white; display: flex; align-items: center; gap: 5px; }
+.meta-badge .val { color: var(--teal); font-size: 13px; }
+.mode-badge { background: var(--teal); color: var(--navy-dk); border-radius: 6px; padding: 4px 12px; font-size: 11px; font-weight: 800; letter-spacing: 1px; }
+
+/* ── CONTROLS BAR ── */
+.controls-bar { background: var(--navy); border-bottom: 2px solid var(--teal); position: sticky; top: 0; z-index: 100; }
+.controls-inner { max-width: 1100px; margin: 0 auto; padding: 10px 40px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.timer { font-size: 22px; font-weight: 800; color: var(--teal); font-variant-numeric: tabular-nums; min-width: 80px; }
+.timer.warning { color: var(--gold); }
+.timer.danger { color: var(--red); animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.progress-wrap { flex: 1; max-width: 380px; }
+.progress-bar { height: 6px; background: #3D3B8E; border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--teal); border-radius: 3px; transition: width 0.3s; }
+.progress-txt { font-size: 11px; color: #8B8ECA; margin-top: 4px; }
+.btn { padding: 7px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 700; font-size: 12px; transition: all 0.2s; }
+.btn-primary { background: var(--teal); color: var(--navy-dk); }
+.btn-primary:hover { background: #00CECE; }
+.btn-secondary { background: var(--purple); color: white; }
+.btn-secondary:hover { background: var(--navy); }
+.btn-danger { background: var(--red); color: white; }
+.btn-new { background: var(--gold); color: var(--navy-dk); }
+.btn-new:hover { background: #FBBF24; }
+.ctrl-group { display: flex; gap: 8px; align-items: center; }
+
+/* ── MAIN ── */
+.main { max-width: 1100px; margin: 0 auto; padding: 28px 40px; }
+#examApp { display: none; }
+
+/* ── SCORE CARD ── */
+.score-card { display: none; background: var(--navy-dk); color: white; border-radius: 12px; padding: 40px; margin-bottom: 28px; text-align: center; border: 2px solid var(--teal); position: relative; overflow: hidden; }
+.score-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 70% 30%, #3D3B8E44 0%, transparent 60%); }
+.score-card h2 { font-size: 26px; margin-bottom: 8px; position: relative; }
+.score-big { font-size: 76px; font-weight: 900; color: var(--teal); line-height: 1; position: relative; }
+.score-pct { font-size: 18px; color: #8B8ECA; position: relative; margin: 6px 0 18px; }
+.score-details { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; position: relative; margin-bottom: 16px; }
+.score-stat { background: var(--purple); border-radius: 8px; padding: 10px 18px; min-width: 90px; }
+.score-stat .n { font-size: 26px; font-weight: 800; }
+.score-stat .l { font-size: 10px; color: #8B8ECA; }
+.score-verdict { margin-top: 14px; padding: 10px 22px; border-radius: 8px; font-size: 15px; font-weight: 700; display: inline-block; position: relative; }
+.verdict-pass { background: var(--green); }
+.verdict-fail { background: var(--red); }
+
+/* ── SCORE PAR THÈME ── */
+.theme-scores { display: none; background: white; border-radius: 12px; padding: 28px; margin-bottom: 28px; border: 1.5px solid var(--gray-bdr); box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+.theme-scores h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+.theme-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.theme-name { font-size: 12px; font-weight: 600; color: var(--text); width: 220px; flex-shrink: 0; }
+.theme-bar-wrap { flex: 1; height: 10px; background: var(--gray-lt); border-radius: 5px; overflow: hidden; }
+.theme-bar-fill { height: 100%; border-radius: 5px; transition: width 0.6s; }
+.theme-score-txt { font-size: 12px; font-weight: 700; width: 60px; text-align: right; flex-shrink: 0; }
+.reco-box { background: #FEF9C3; border: 1.5px solid var(--gold); border-radius: 8px; padding: 14px 18px; margin-top: 18px; }
+.reco-box h4 { font-size: 13px; font-weight: 800; color: #92400E; margin-bottom: 8px; }
+.reco-item { font-size: 12px; color: #78350F; margin-bottom: 4px; }
+
+/* ── MISSED QUESTIONS ── */
+.missed-section { display: none; background: white; border-radius: 12px; padding: 28px; margin-bottom: 28px; border: 1.5px solid var(--red); }
+.missed-section h3 { font-size: 17px; font-weight: 800; color: var(--red); margin-bottom: 18px; }
+.missed-q { background: #FEF2F2; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--red); }
+.missed-q .mq-text { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.missed-q .mq-answer { font-size: 12px; color: var(--green); font-weight: 700; margin-bottom: 4px; }
+.missed-q .mq-expl { font-size: 11.5px; color: var(--gray); line-height: 1.5; }
+
+/* ── SECTIONS ── */
+.section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; margin-top: 28px; }
+.section-num { background: var(--navy); color: white; font-weight: 800; font-size: 13px; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.section-title { font-size: 17px; font-weight: 700; color: var(--navy); }
+.section-line { flex: 1; height: 2px; background: var(--teal); opacity: 0.3; }
+
+/* ── QUESTION CARD ── */
+.q-card { background: white; border-radius: 10px; border: 1.5px solid var(--gray-bdr); margin-bottom: 14px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+.q-card:hover { border-color: #B0AFEE; }
+.q-card.answered { border-color: var(--teal); }
+.q-card.correct { border-color: var(--green); background: #F0FDF4; }
+.q-card.incorrect { border-color: var(--red); background: #FEF2F2; }
+.q-card.skipped { border-color: var(--gold); }
+.q-header { display: flex; align-items: flex-start; gap: 10px; padding: 14px 18px 10px; }
+.q-num { background: var(--navy); color: white; font-weight: 800; font-size: 11px; min-width: 30px; height: 22px; border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.q-difficulty { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 3px; flex-shrink: 0; margin-top: 3px; letter-spacing: 0.5px; }
+.diff-easy { background: #DCFCE7; color: #166534; }
+.diff-medium { background: #FEF9C3; color: #92400E; }
+.diff-hard { background: #FEE2E2; color: #991B1B; }
+.q-tag { font-size: 9.5px; font-weight: 700; background: var(--teal-lt); color: var(--navy); padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+.q-text { font-size: 13.5px; line-height: 1.55; font-weight: 600; color: var(--text); }
+.q-note { font-size: 10.5px; color: var(--gray); font-style: italic; margin-top: 3px; font-weight: 400; }
+.q-options { padding: 2px 18px 14px 58px; display: flex; flex-direction: column; gap: 7px; }
+.option { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border-radius: 7px; border: 1.5px solid var(--gray-bdr); cursor: pointer; transition: all 0.15s; background: var(--gray-lt); font-size: 12.5px; line-height: 1.45; }
+.option:hover { border-color: var(--teal); background: var(--teal-lt); }
+.option.selected { border-color: var(--navy); background: #EEEEFF; }
+.option.option-correct { border-color: var(--green); background: #DCFCE7; font-weight: 600; }
+.option.option-wrong { border-color: var(--red); background: #FEE2E2; text-decoration: line-through; opacity: 0.8; }
+.option input { margin-top: 2px; accent-color: var(--navy); flex-shrink: 0; }
+.option-letter { font-weight: 800; color: var(--purple); min-width: 16px; font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+.explanation { display: none; margin: 0 18px 14px 58px; padding: 11px 14px; background: var(--navy-dk); border-radius: 7px; border-left: 4px solid var(--teal); font-size: 12px; color: #C8C9E8; line-height: 1.55; }
+.explanation strong { color: var(--teal); }
+.explanation.show { display: block; }
+.trap-note { display: none; margin: 0 18px 14px 58px; padding: 7px 12px; background: #3A1A1A; border-radius: 7px; border-left: 4px solid var(--red); font-size: 11.5px; color: #FF9999; }
+.trap-note.show { display: block; }
+
+/* ── MODE ENTRAINEMENT : correction immédiate ── */
+.train-feedback { display: none; margin: 0 18px 14px 58px; padding: 9px 14px; border-radius: 7px; font-size: 12px; font-weight: 700; }
+.train-correct { background: #DCFCE7; color: #166534; border-left: 4px solid var(--green); }
+.train-wrong { background: #FEE2E2; color: #991B1B; border-left: 4px solid var(--red); }
+.train-feedback.show { display: block; }
+
+/* ── FLAG / CONTROLS ── */
+.q-controls { display: flex; align-items: center; gap: 6px; margin-left: auto; flex-shrink: 0; }
+.flag-btn { background: none; border: none; cursor: pointer; font-size: 13px; padding: 2px 5px; border-radius: 4px; transition: background 0.2s; }
+.flag-btn:hover { background: var(--gray-lt); }
+.flag-btn.flagged { color: var(--gold); }
+
+/* ── FOOTER ── */
+.footer-bar { background: var(--navy-dk); padding: 14px 40px; text-align: center; color: #6B6EA8; font-size: 11px; margin-top: 40px; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .main { padding: 12px; }
+  .header-inner { padding: 16px; }
+  .controls-inner { padding: 8px 12px; gap: 8px; }
+  .q-options { padding-left: 16px; }
+  .explanation, .trap-note, .train-feedback { margin-left: 16px; }
+  .theme-name { width: 140px; font-size: 11px; }
+  .start-title { font-size: 28px; }
+  .mode-card { width: 240px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ÉCRAN DE DÉMARRAGE
+     ═══════════════════════════════════════════════════════════ -->
+<div id="startScreen">
+  <div class="start-brand">PRODUCT·AI CONSULTING  /  FORMATION PSPO I</div>
+  <div class="start-title">Questionnaire Blanc <span>PSPO I</span></div>
+  <div class="start-sub">Banque de 500 questions · Tirage aléatoire · Scrum Guide 2020</div>
+
+  <div class="start-modes">
+    <div class="mode-card selected" onclick="selectMode('exam')" id="modeExam">
+      <div class="mode-icon">🎯</div>
+      <div class="mode-name">Mode Examen</div>
+      <div class="mode-desc">80 questions aléatoires · 60 minutes chrono · Correction uniquement à la fin · Conditions réelles PSPO I</div>
+    </div>
+    <div class="mode-card" onclick="selectMode('train')" id="modeTrain">
+      <div class="mode-icon">📚</div>
+      <div class="mode-name">Mode Entraînement</div>
+      <div class="mode-desc">80 questions · Pas de timer · Correction immédiate après chaque réponse · Explications au fil de l'eau</div>
+    </div>
+  </div>
+
+  <button class="start-btn" onclick="startExam()">Démarrer →</button>
+
+  <div class="start-stats">
+    <div class="start-stat"><div class="n">500</div><div class="l">QUESTIONS</div></div>
+    <div class="start-stat"><div class="n">80</div><div class="l">PAR EXAMEN</div></div>
+    <div class="start-stat"><div class="n">85%</div><div class="l">SEUIL PSPO I</div></div>
+    <div class="start-stat"><div class="n">60<small style="font-size:14px">min</small></div><div class="l">DURÉE EXAMEN</div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     APPLICATION EXAMEN
+     ═══════════════════════════════════════════════════════════ -->
+<div id="examApp">
+
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="brand">PRODUCT·AI CONSULTING  /  PSPO I</div>
+        <h1>Questionnaire Blanc <span>PSPO I</span></h1>
+        <p id="headerSub">80 questions · 60 minutes · Seuil de réussite : 85%</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;z-index:2">
+        <span class="mode-badge" id="modeBadge">MODE EXAMEN</span>
+        <div class="meta-row">
+          <div class="meta-badge">❓ <span class="val">80</span> questions</div>
+          <div class="meta-badge">🎯 Seuil <span class="val">85%</span></div>
+          <div class="meta-badge">📖 Scrum Guide <span class="val">2020</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="controls-inner">
+      <div class="timer" id="timer">60:00</div>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="progress-txt" id="progressTxt">0 / 80 répondues</div>
+      </div>
+      <div class="ctrl-group">
+        <button class="btn btn-secondary" id="reviewBtn" onclick="toggleReview()" style="display:none">👁 Révision</button>
+        <button class="btn btn-new" onclick="confirmNewExam()">🔀 Nouvel examen</button>
+        <button class="btn btn-danger" onclick="submitExam()">✅ Terminer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Score card -->
+    <div class="score-card" id="scoreCard">
+      <h2>Résultat de l'examen</h2>
+      <div class="score-big" id="scoreNum">--</div>
+      <div class="score-pct" id="scorePct">-- %</div>
+      <div class="score-details">
+        <div class="score-stat"><div class="n" id="scoreCorrect" style="color:var(--green)">-</div><div class="l">Correctes</div></div>
+        <div class="score-stat"><div class="n" id="scoreWrong" style="color:var(--red)">-</div><div class="l">Incorrectes</div></div>
+        <div class="score-stat"><div class="n" id="scoreSkipped" style="color:var(--gold)">-</div><div class="l">Non répondues</div></div>
+      </div>
+      <div class="score-verdict" id="scoreVerdict"></div>
+      <p style="margin-top:14px;font-size:11px;color:#8B8ECA;position:relative">Les réponses correctes sont affichées en vert · Explications disponibles sous chaque question</p>
+    </div>
+
+    <!-- Score par thème -->
+    <div class="theme-scores" id="themeScores">
+      <h3>📊 Score par thème</h3>
+      <div id="themeScoresContent"></div>
+      <div class="reco-box" id="recoBox" style="display:none">
+        <h4>📌 Thèmes à réviser en priorité</h4>
+        <div id="recoContent"></div>
+      </div>
+    </div>
+
+    <!-- Questions ratées -->
+    <div class="missed-section" id="missedSection">
+      <h3>❌ Questions ratées — À revoir</h3>
+      <div id="missedContent"></div>
+    </div>
+
+    <!-- Questions -->
+    <div id="questionsContainer"></div>
+  </div>
+
+  <div class="footer-bar">
+    Product·AI Consulting · Formation PSPO I V2 · Basé sur The Scrum Guide 2020 (scrumguides.org) · <span id="footerMode"></span>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════
+   ██████████████████████████████████████████████████████████████████
+   BANQUE DE QUESTIONS — 500 questions PSPO I (Scrum Guide 2020)
+   Structure : { id, section, difficulty, multi, text, options[], answer[], trap, expl }
+   Sections normalisées (7 buckets pour pondération) :
+     "PO & Product Value"       → 25% → 20 questions sur 80
+     "Scrum Framework"          → 15% → 12 questions
+     "Scrum Team"               → 15% → 12 questions
+     "Events"                   → 15% → 12 questions
+     "Artifacts & DoD"          → 15% → 12 questions
+     "Product Goal & Planning"  → 10% → 8 questions
+     "Cases & Anti-patterns"    → 5%  → 4 questions
+   Difficulty : easy(25%) medium(50%) hard(25%)
+   ██████████████████████████████████████████████████████████████████
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const QUESTION_BANK = [
+
+/* ══════════════════════════════════════════════════════════
+   BUCKET 1 : PO & PRODUCT VALUE (125 questions)
+   ══════════════════════════════════════════════════════════ */
+
+// ── EASY ──────────────────────────────────────────────────
+{id:1,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Qui est accountable de maximiser la valeur du produit résultant du travail de la Scrum Team ?",
+options:["Le Scrum Master","Les Developers","Le Product Owner","La direction de l'entreprise"],
+answer:[2],trap:null,
+expl:"Le <strong>Product Owner</strong> est seul accountable de maximiser la valeur du produit résultant du travail de la Scrum Team. C'est sa responsabilité principale selon le Scrum Guide 2020."},
+
+{id:2,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Le Product Owner est une seule personne, pas un comité.",
+options:["Vrai","Faux"],
+answer:[0],trap:null,
+expl:"<strong>Vrai.</strong> Le Scrum Guide est explicite : le Product Owner est <strong>une seule personne</strong>, jamais un comité ou un groupe. Des parties prenantes peuvent influencer le PO, mais la décision finale lui appartient toujours."},
+
+{id:3,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Le Product Owner est responsable de créer et communiquer explicitement quel artefact ?",
+options:["Le Sprint Backlog","Le Product Goal","La Definition of Done","Le Sprint Goal"],
+answer:[1],trap:null,
+expl:"Selon le Scrum Guide, le PO est accountable de <strong>développer et communiquer explicitement le Product Goal</strong>. C'est l'une de ses trois accountabilities principales listées dans le guide."},
+
+{id:4,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Combien de Product Owners peut-il y avoir pour un produit sur lequel travaillent plusieurs Scrum Teams ?",
+options:["Un par Scrum Team","Un seul pour tout le produit","Deux maximum","Autant que nécessaire"],
+answer:[1],trap:null,
+expl:"Il y a toujours <strong>un seul Product Owner par produit</strong>, même si plusieurs Scrum Teams y travaillent. Ce PO unique gère un seul Product Backlog pour l'ensemble du produit."},
+
+{id:5,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Le Product Owner peut-il déléguer des activités de gestion du Product Backlog à d'autres ?",
+options:["Non, jamais","Oui, mais il reste toujours accountable","Oui, et il n'est plus accountable","Oui, uniquement au Scrum Master"],
+answer:[1],trap:"Déléguer des activités ≠ déléguer l'accountability.",
+expl:"Le PO peut <strong>déléguer des activités</strong> à d'autres membres de la Scrum Team ou à des stakeholders, mais il <strong>reste seul accountable</strong> de la valeur du Product Backlog. L'accountability est non-transférable."},
+
+{id:6,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Les décisions du Product Owner concernant le Product Backlog doivent être approuvées par le Scrum Master.",
+options:["Vrai","Faux"],
+answer:[1],trap:null,
+expl:"<strong>Faux.</strong> Les décisions du PO concernant le Product Backlog sont <strong>souveraines</strong>. Ni le Scrum Master ni personne d'autre ne doit approuver ses décisions sur l'ordre ou le contenu du backlog."},
+
+{id:7,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Que doit faire le Product Owner pour que le Product Backlog soit efficace ?",
+options:["Le mettre à jour une fois par Sprint uniquement","S'assurer qu'il est transparent, visible et compris","Le garder secret pour protéger la stratégie produit","Le copier du backlog de l'iteration précédente"],
+answer:[1],trap:null,
+expl:"Le PO doit s'assurer que le Product Backlog est <strong>transparent, visible et compris</strong>. C'est l'une de ses accountabilities explicitement listées dans le Scrum Guide 2020."},
+
+{id:8,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Le Product Owner peut-il être un Scrum Master dans la même Scrum Team ?",
+options:["Oui, c'est même recommandé pour économiser des ressources","Non, le Scrum Guide ne l'interdit pas mais crée des conflits d'intérêts","Oui, uniquement dans les petites équipes","Non, c'est explicitement interdit par le Scrum Guide"],
+answer:[1],trap:"Le Scrum Guide n'interdit pas formellement cette combinaison mais la déconseille.",
+expl:"Le Scrum Guide <strong>ne l'interdit pas explicitement</strong>, mais combiner PO et SM dans une même personne crée des conflits d'intérêts évidents (le PO optimise la valeur, le SM protège le processus). En pratique, c'est fortement déconseillé."},
+
+{id:9,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Qui peut demander au Product Owner de modifier le contenu ou l'ordre du Product Backlog ?",
+options:["Uniquement les Developers","Le Scrum Master et les Developers","N'importe qui peut tenter de l'influencer, mais le PO décide","Uniquement les stakeholders clés"],
+answer:[2],trap:null,
+expl:"<strong>N'importe qui</strong> peut tenter d'influencer le PO. Mais c'est le PO et lui seul qui <strong>décide</strong> de ce qui entre dans le backlog et dans quel ordre. Il est souverain sur le Product Backlog."},
+
+{id:10,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Le Product Owner représente les intérêts de qui dans la Scrum Team ?",
+options:["Uniquement des développeurs","Uniquement du management","Des stakeholders et clients","Du Scrum Master"],
+answer:[2],trap:null,
+expl:"Le PO représente les intérêts des <strong>stakeholders et des clients</strong> auprès de la Scrum Team. Il est la voix du marché, des utilisateurs et des parties prenantes dans les décisions produit."},
+
+// ── MEDIUM ────────────────────────────────────────────────
+{id:11,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Sur quelle base le Product Owner décide-t-il de l'ordre des items du Product Backlog ?",
+options:["Uniquement selon la valeur business","Uniquement selon les risques","Selon les critères qu'il juge appropriés — le Scrum Guide ne prescrit pas de méthode","Selon le vote de la Scrum Team"],
+answer:[2],trap:"Le Scrum Guide dit 'ordered' mais ne prescrit PAS les critères.",
+expl:"Le Scrum Guide dit que le PO <strong>ordonne</strong> les PBI mais <strong>ne prescrit pas les critères</strong>. Le PO est libre : valeur, risque, dépendances, ROI, apprentissage... C'est son jugement professionnel."},
+
+{id:12,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Quel est le rôle du Product Owner lors du Sprint Planning ?",
+options:["Il anime la réunion et distribue le travail","Il collabore pour clarifier les PBI et peut négocier le périmètre","Il n'est pas requis, uniquement les Developers participent","Il approuve les estimations des Developers"],
+answer:[1],trap:null,
+expl:"Lors du Sprint Planning, le PO <strong>collabore</strong> avec la Scrum Team pour clarifier les PBI et peut négocier le périmètre. C'est la Scrum Team entière qui crée le Sprint Goal, et les Developers qui sélectionnent les items."},
+
+{id:13,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Un stakeholder important exige que son besoin soit traité en priorité absolue dans le prochain Sprint. Que doit faire le Product Owner ?",
+options:["Accepter immédiatement pour maintenir la relation","Refuser systématiquement pour protéger le Sprint Goal","Écouter, évaluer, et décider souverainement de l'ordre en tenant compte de tous les besoins","Demander au Scrum Master de gérer le conflit"],
+answer:[2],trap:null,
+expl:"Le PO doit <strong>écouter et évaluer</strong> tous les besoins, mais la décision finale lui appartient souverainement. Il peut tenir compte de la demande du stakeholder sans nécessairement en faire sa priorité absolue."},
+
+{id:14,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Le Product Owner doit-il assister au Daily Scrum ?",
+options:["Oui, obligatoirement","Oui, pour valider l'avancement","Non, le Daily Scrum est un événement pour les Developers","Oui, mais uniquement en observateur silencieux"],
+answer:[2],trap:"PO non requis au Daily Scrum — c'est l'événement des Developers.",
+expl:"<strong>Non.</strong> Le Daily Scrum est un événement <strong>pour et par les Developers</strong>. Le PO peut y assister s'il y est invité, mais sa présence n'est pas requise ni prescrite par le Scrum Guide."},
+
+{id:15,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"La valeur du produit maximisée par le Product Owner inclut :",
+options:["Uniquement la valeur financière","Uniquement la satisfaction client mesurable","La valeur pour les clients, les utilisateurs et l'organisation — au sens large","Uniquement les fonctionnalités livrées"],
+answer:[2],trap:null,
+expl:"La valeur que le PO maximise est <strong>au sens large</strong> : valeur pour les clients, les utilisateurs, l'organisation, selon le contexte. Le Scrum Guide ne définit pas une seule dimension de valeur."},
+
+{id:16,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Lors de la Sprint Review, quel est le principal rôle du Product Owner ?",
+options:["Présenter l'Increment au management","Approuver ou rejeter chaque PBI livré","Participer à l'inspection collaborative et adapter le Product Backlog si nécessaire","Rédiger le rapport de fin de Sprint"],
+answer:[2],trap:null,
+expl:"Lors de la Sprint Review, le PO <strong>participe à l'inspection collaborative</strong> de l'Increment avec la Scrum Team et les stakeholders. Il adapte le Product Backlog en conséquence. Ce n'est pas une session d'approbation formelle."},
+
+{id:17,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Le Product Owner 'commande' le Product Backlog. Quel terme le Scrum Guide utilise-t-il ?",
+options:["Prioritize (prioriser)","Order (ordonner)","Rank (classer)","Manage (gérer)"],
+answer:[1],trap:"'Ordered' pas 'prioritized' — nuance fondamentale à l'examen.",
+expl:"Le Scrum Guide utilise spécifiquement le terme <strong>'ordered'</strong> (ordonné) — pas 'prioritized'. Cette nuance est importante : l'ordre peut dépendre de critères multiples, pas uniquement de la priorité."},
+
+{id:18,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Combien de Product Backlogs doit-il y avoir si 4 Scrum Teams travaillent sur le même produit ?",
+options:["4 — un par équipe","2 — un principal et un de secours","1 — un seul pour tout le produit","Aucun — chaque équipe gère ses propres tâches"],
+answer:[2],trap:"Peu importe le nombre d'équipes : 1 seul Product Backlog par produit.",
+expl:"Il y a toujours <strong>un seul Product Backlog par produit</strong>, même avec plusieurs Scrum Teams. Elles partagent le même backlog, géré par un seul Product Owner."},
+
+{id:19,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Le Product Owner est accountable du 'quoi' livrer. Les Developers sont accountables du 'comment' livrer.",
+options:["Vrai — c'est la séparation fondamentale dans Scrum","Faux — le PO décide également du comment","Vrai — mais seulement en mode examen, pas en pratique","Faux — le SM décide du quoi et du comment"],
+answer:[0],trap:null,
+expl:"<strong>Vrai.</strong> Cette séparation est fondamentale : le PO possède le <strong>'quoi'</strong> (quoi construire, dans quel ordre), les Developers possèdent le <strong>'comment'</strong> (comment construire). Le PO ne dit pas aux Developers comment faire leur travail."},
+
+{id:20,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Un Product Owner peut-il travailler avec plusieurs Scrum Teams simultanément ?",
+options:["Non, un PO = une seule Scrum Team maximum","Oui, si ces équipes travaillent sur le même produit","Oui, sur autant de produits différents qu'il souhaite","Non, c'est contraire au Scrum Guide"],
+answer:[1],trap:null,
+expl:"<strong>Oui.</strong> Si plusieurs Scrum Teams travaillent sur le <strong>même produit</strong>, un seul PO les sert toutes. Si c'est des produits différents, il faudrait idéalement des PO distincts (bien que le Scrum Guide ne l'interdise pas formellement)."},
+
+{id:21,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Quel est l'impact si les Developers ignorent les décisions du Product Owner sur l'ordre du Product Backlog ?",
+options:["Aucun impact — les Developers ont l'autorité technique finale","C'est une violation des règles de Scrum — le PO est accountable de l'ordre","Cela peut être acceptable si la décision est justifiée techniquement","C'est au Scrum Master de trancher le conflit"],
+answer:[1],trap:null,
+expl:"Ignorer les décisions du PO sur l'ordre du backlog <strong>viole les règles de Scrum</strong>. Le PO est accountable de l'ordre et cette décision lui appartient. Les Developers peuvent partager leur avis mais doivent respecter les décisions du PO."},
+
+{id:22,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Le Product Owner doit-il participer à la Sprint Retrospective ?",
+options:["Non, c'est uniquement pour les Developers","Non, sauf invitation exceptionnelle","Oui, la Sprint Rétrospective implique toute la Scrum Team","Oui, mais uniquement comme observateur"],
+answer:[2],trap:"PO INCLUS dans la Rétro. Stakeholders EXCLUS.",
+expl:"<strong>Oui.</strong> La Sprint Rétrospective implique <strong>toute la Scrum Team</strong> : PO, SM et Developers. Le PO est membre de la Scrum Team et participe à l'amélioration continue du groupe."},
+
+{id:23,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Quel est le lien entre Product Vision, Product Goal et Product Backlog ?",
+options:["Ce sont trois noms différents pour le même concept","La Vision inspire le Product Goal qui guide le Product Backlog","Le Product Backlog crée la Vision à long terme","Le Product Goal remplace la Vision dans Scrum"],
+answer:[1],trap:null,
+expl:"La <strong>Vision</strong> (pourquoi le produit existe) inspire le <strong>Product Goal</strong> (objectif long terme concret) qui guide le <strong>Product Backlog</strong> (travail à faire). C'est une cascade stratégique vers l'opérationnel."},
+
+{id:24,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Les membres de la Scrum Team peuvent-ils désobéir au Product Owner s'ils pensent que sa décision nuit au produit ?",
+options:["Oui, ils ont le droit de révision technique","Non, le PO est souverain sur les décisions produit","Oui, par vote à la majorité","Non, sauf si le Scrum Master intervient"],
+answer:[1],trap:null,
+expl:"Le PO est <strong>souverain</strong> sur les décisions produit (quoi construire, dans quel ordre). Les membres de l'équipe peuvent exprimer des préoccupations et influencer le PO, mais ne peuvent pas désobéir à ses décisions produit."},
+
+{id:25,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Le Product Owner est-il responsable de rédiger toutes les User Stories du Product Backlog ?",
+options:["Oui, c'est sa responsabilité exclusive","Non — n'importe qui peut écrire des PBI, mais le PO est accountable de leur contenu et ordre","Oui, mais il peut se faire assister par un Business Analyst","Non — seuls les Developers rédigent les User Stories"],
+answer:[1],trap:null,
+expl:"<strong>Non.</strong> N'importe qui peut contribuer à l'écriture des PBI (Developers, stakeholders, etc.), mais le PO est <strong>accountable</strong> de leur clarté, de leur contenu et de leur ordre dans le backlog."},
+
+// ── HARD ──────────────────────────────────────────────────
+{id:26,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"During a Sprint Review, a key stakeholder insists that the entire Product Backlog be reprioritized based on new market data. What is the best response from the Product Owner?",
+options:["Accept immediately to show responsiveness to stakeholders","Refuse — the Product Backlog cannot change during a Sprint","Listen carefully to the stakeholder's input and update the Product Backlog ordering based on what the PO judges most valuable","Escalate to the Scrum Master to facilitate the decision"],
+answer:[2],trap:"Sprint Review is precisely the moment to adapt the Product Backlog based on feedback.",
+expl:"La <strong>Sprint Review</strong> est précisément conçue pour inspecter l'Increment et <strong>adapter le Product Backlog</strong>. Le PO écoute les stakeholders mais reste souverain sur les décisions d'ordre. Il peut mettre à jour le backlog selon ce qu'il juge le plus précieux."},
+
+{id:27,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Lequel de ces énoncés décrit le mieux l'accountability du Product Owner par rapport aux Developers ?",
+options:["Le PO est le manager des Developers et peut leur imposer des tâches","Le PO décide ce qui est fait — les Developers décident comment c'est fait","Le PO et les Developers partagent équitablement toutes les décisions","Le PO valide techniquement chaque implémentation avant livraison"],
+answer:[1],trap:"PO = QUOI livrer. Developers = COMMENT livrer. Frontière fondamentale.",
+expl:"La séparation est nette : le PO décide <strong>ce qui est fait</strong> (quoi construire, dans quel ordre), les Developers décident <strong>comment c'est fait</strong> (architecture, implémentation). Le PO ne manage pas les Developers."},
+
+{id:28,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Which statement about the Product Owner's authority is TRUE according to the Scrum Guide 2020?",
+options:["The PO's decisions must be validated by the Scrum Master","The PO can force the organization to implement their Product Backlog decisions","The PO's decisions are reflected in the content and ordering of the Product Backlog","The PO shares ordering authority equally with senior Developers"],
+answer:[2],trap:null,
+expl:"Selon le Scrum Guide, <strong>les décisions du PO se reflètent dans le contenu et l'ordre du Product Backlog</strong>. L'organisation doit respecter ces décisions. Le Scrum Guide dit explicitement que personne ne peut forcer les Developers à travailler sur autre chose que ce que le PO a défini."},
+
+{id:29,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Un PO constate que son Product Goal est devenu obsolète à mi-Sprint car le marché a radicalement changé. Quelle est la meilleure action ?",
+options:["Continuer le Sprint tel quel — on ajustera au Sprint suivant","Demander aux Developers d'adapter leur travail immédiatement","Envisager d'annuler le Sprint si le Sprint Goal est lui aussi devenu obsolète","Modifier le Product Goal en cours de Sprint pour le réaligner"],
+answer:[2],trap:"Seul le PO peut annuler un Sprint — si le Sprint Goal est devenu obsolète.",
+expl:"Si le <strong>Sprint Goal</strong> est devenu obsolète (ce qui découle souvent d'un Product Goal devenu non pertinent), le PO <strong>peut annuler le Sprint</strong>. C'est la seule personne qui peut le faire, et c'est la situation qui le justifie."},
+
+{id:30,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"The development team wants to add a technical improvement that has no direct business value but would significantly reduce future technical debt. What should the Product Owner do?",
+options:["Refuse — only business-value items belong in the Product Backlog","Accept automatically — technical decisions belong to Developers","Evaluate the long-term value impact and decide whether to include it in the Product Backlog","Let the Scrum Master decide since it's a technical matter"],
+answer:[2],trap:"La dette technique a une valeur indirecte — le PO doit l'évaluer comme tout autre PBI.",
+expl:"Le PO doit <strong>évaluer la valeur à long terme</strong> de l'amélioration technique (réduction de la dette = vitesse future = valeur future). Si la valeur justifie l'effort, il peut l'inclure dans le backlog. La définition de 'valeur' est large dans Scrum."},
+
+{id:31,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Laquelle de ces pratiques est contraire aux responsabilités du Product Owner selon le Scrum Guide ?",
+options:["Ordonner le Product Backlog selon la valeur perçue","Développer et communiquer le Product Goal","Définir comment les Developers vont implémenter les fonctionnalités","S'assurer que le Product Backlog est transparent"],
+answer:[2],trap:"Le PO décide QUOI, pas COMMENT. Définir l'implémentation = violation des responsabilités.",
+expl:"<strong>Définir comment les Developers implémentent</strong> est contraire au rôle du PO. Le PO est accountable du QUOI (quoi construire, dans quel ordre), pas du COMMENT. L'implémentation est la responsabilité exclusive des Developers."},
+
+{id:32,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"A Product Owner is frequently absent and unavailable to the team. What is the most likely consequence according to Scrum principles?",
+options:["The Scrum Master takes over the PO responsibilities","The team selects items from the backlog based on their own interpretation","The Sprint cannot proceed without PO availability for clarification","The team operates normally since the backlog was pre-ordered"],
+answer:[2],trap:"L'indisponibilité du PO crée un risque réel pour le Sprint.",
+expl:"Sans PO disponible, l'équipe perd la capacité de <strong>clarifier les PBI</strong>, de négocier le périmètre et d'obtenir des décisions rapides. En pratique, le Sprint peut continuer mais au risque de mal comprendre les attentes. Le Scrum Guide souligne que le PO doit être disponible."},
+
+{id:33,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Which statement BEST describes how the Product Owner should interact with stakeholders ?",
+options:["The PO should shield the team from all stakeholder contact","The PO should invite stakeholders to every Scrum event","The PO collaborates with stakeholders and ensures their needs are represented in the Product Backlog","The PO must get written approval from stakeholders before ordering any PBI"],
+answer:[2],trap:null,
+expl:"Le PO <strong>collabore avec les stakeholders</strong> en permanence et s'assure que leurs besoins sont reflétés dans le Product Backlog. Il ne les bloque pas de l'équipe mais gère la relation. Les stakeholders peuvent notamment participer à la Sprint Review."},
+
+{id:34,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"The Product Owner wants to include a PBI in the next Sprint but the Developers estimate it will take 3 Sprints. What is the correct Scrum approach?",
+options:["The PO can override the estimate and force it into one Sprint","The PO and Developers collaborate to potentially split the PBI into smaller deliverable pieces","The Scrum Master decides whether to include it","The PBI is automatically excluded from the next Sprint"],
+answer:[1],trap:null,
+expl:"La bonne approche est de <strong>collaborer pour décomposer le PBI</strong> en morceaux plus petits livrables en un Sprint. Le PO et les Developers travaillent ensemble lors du refinement pour s'assurer que les PBI sont prêts et suffisamment petits."},
+
+{id:35,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Quelle affirmation décrit le mieux la notion d'Evidence-Based Management (EBM) pour le Product Owner ?",
+options:["L'EBM remplace le Product Backlog par des KPIs","L'EBM aide le PO à prendre des décisions d'investissement basées sur des données concrètes de valeur","L'EBM est uniquement applicable dans les grandes organisations","L'EBM est prescrit par le Scrum Guide comme obligatoire"],
+answer:[1],trap:"EBM est complémentaire à Scrum, pas prescrit dans le Scrum Guide.",
+expl:"L'<strong>Evidence-Based Management</strong> (défini par Scrum.org, pas dans le Scrum Guide) aide le PO à mesurer la valeur livrée et à prendre des décisions basées sur 4 domaines : Current Value, Unrealized Value, Ability to Innovate et Time to Market."},
+
+{id:36,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Which of the following is NOT an accountability of the Product Owner according to the Scrum Guide 2020?",
+options:["Developing and explicitly communicating the Product Goal","Ordering the Product Backlog items","Ensuring the Product Backlog is transparent and understood","Deciding how the Developers implement each Product Backlog item"],
+answer:[3],trap:"PO = quoi. Developers = comment. L'implémentation appartient aux Developers.",
+expl:"Décider <strong>comment les Developers implémentent</strong> les PBI n'est <strong>pas</strong> une accountability du PO. Le Scrum Guide liste 3 accountabilities du PO : développer/communiquer le Product Goal, créer/communiquer/ordonner les PBI, s'assurer de la transparence du backlog."},
+
+{id:37,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"A Product Owner discovers mid-Sprint that a high-priority item was misunderstood. The Developers implemented something different from what was intended. What should happen?",
+options:["The Sprint must be cancelled immediately","The Developers fix it during the Sprint if possible, otherwise it returns to the Product Backlog","The PO changes the Sprint Goal to match what was built","The Scrum Master resolves the miscommunication and decides next steps"],
+answer:[1],trap:null,
+expl:"Si possible, les Developers peuvent <strong>corriger l'implémentation pendant le Sprint</strong>. Sinon, le PBI qui ne respecte pas la DoD <strong>retourne au Product Backlog</strong> pour être replanifié. Ce n'est pas une raison d'annuler le Sprint si le Sprint Goal est encore atteignable."},
+
+{id:38,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Comment le Product Owner devrait-il gérer un conflit entre deux stakeholders ayant des besoins contradictoires dans le Product Backlog ?",
+options:["Donner la priorité au stakeholder le plus senior hiérarchiquement","Donner la priorité au stakeholder générant le plus de revenus","Évaluer les deux besoins et décider souverainement de l'ordre selon la valeur globale","Laisser les Developers choisir ce qu'ils préfèrent implémenter"],
+answer:[2],trap:null,
+expl:"Le PO <strong>évalue les deux besoins</strong> (impact, valeur, risque, dépendances) et décide <strong>souverainement</strong> de l'ordre. Ni la hiérarchie, ni le revenu généré ne sont les seuls critères. C'est le jugement professionnel du PO qui prime."},
+
+{id:39,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"A Scrum Team has been working on a product for 8 months. The Product Owner realizes the Product Goal is no longer relevant. What should the PO do?",
+options:["Continue until the end of the current Sprint, then create a new Product Goal","Immediately stop the Sprint and create a new Product Goal","Consult the Scrum Master before making any changes to the Product Goal","Present options to stakeholders and let them vote on the new direction"],
+answer:[0],trap:"On ne modifie pas le Product Goal en cours de Sprint — mais on peut annuler si le Sprint Goal est obsolète.",
+expl:"La meilleure approche est d'<strong>attendre la fin du Sprint</strong> pour définir un nouveau Product Goal (à moins que le Sprint Goal soit lui aussi devenu obsolète, auquel cas le PO peut annuler le Sprint). Le Scrum Guide précise qu'il n'y a qu'un Product Goal à la fois."},
+
+{id:40,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Which statement about Product Backlog Refinement is TRUE?",
+options:["It is an official Scrum event with a fixed timebox","It must be done by the Product Owner alone","It is an ongoing activity that consumes no more than 10% of Developers' capacity","It must happen before every Sprint Planning"],
+answer:[2],trap:"Le Refinement est une activité continue — pas un événement Scrum officiel.",
+expl:"Le Product Backlog Refinement est une <strong>activité continue</strong>, pas un événement Scrum officiel. Le Scrum Guide suggère qu'elle ne consomme pas plus de <strong>10% de la capacité des Developers</strong>. Elle peut avoir lieu à tout moment pendant le Sprint."},
+
+// Continuing PO & Product Value - more medium/hard questions
+{id:41,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Le Product Owner doit-il estimer les Product Backlog Items ?",
+options:["Oui, c'est son rôle principal lors du refinement","Non — les Developers font les estimations, pas le PO","Oui, mais seulement pour les items prioritaires","Le Scrum Guide ne prescrit pas qui fait les estimations"],
+answer:[1],trap:null,
+expl:"Les <strong>estimations sont faites par les Developers</strong>, pas par le PO. Le PO peut clarifier les PBI pour aider l'estimation, mais l'acte d'estimer appartient à ceux qui vont réaliser le travail."},
+
+{id:42,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Le Product Backlog est-il complet au début d'un projet Scrum ?",
+options:["Oui, toutes les fonctionnalités doivent être définies avant le premier Sprint","Non — il évolue continuellement et n'est jamais vraiment complet","Oui, mais uniquement pour les 3 premiers Sprints","Non — seul le premier Sprint est planifié en détail"],
+answer:[1],trap:null,
+expl:"Le Product Backlog est <strong>vivant et en constante évolution</strong>. Il n'est jamais complet tant que le produit existe. Les items sont ajoutés, modifiés, retirés en permanence en réponse aux apprentissages et aux changements."},
+
+{id:43,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Qu'est-ce que le 'Product Backlog Refinement' selon le Scrum Guide ?",
+options:["Un événement Scrum officiel se tenant avant chaque Sprint Planning","L'acte de décomposer et clarifier les PBI, leur ajouter des détails, estimations et ordre","Le processus de priorisation finale des PBI lors du Sprint Planning","Une réunion mensuelle de revue stratégique du produit"],
+answer:[1],trap:null,
+expl:"Le Refinement consiste à <strong>décomposer et clarifier les PBI</strong>, leur ajouter des détails, des estimations et un ordre. C'est une activité continue, pas un événement officiel. Elle n'a pas de timebox prescrite."},
+
+{id:44,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"The organization's management tells the Product Owner to add a specific feature to the next Sprint without justification. What should the Product Owner do?",
+options:["Add it immediately to show respect for management","Refuse and escalate to the Scrum Master","Listen, evaluate the value, and decide whether to include it in the Product Backlog","Add it to the Product Backlog but at the lowest priority"],
+answer:[2],trap:null,
+expl:"Le PO <strong>écoute la demande du management</strong> mais prend sa décision souverainement basée sur la valeur. Le management peut influencer le PO mais ne peut pas lui imposer de décisions sur le backlog. Le PO est accountable, pas le management."},
+
+{id:45,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Un Product Owner peut refuser de livrer un Increment qui respecte la Definition of Done.",
+options:["Vrai — le PO valide chaque livraison","Faux — un Increment conforme à la DoD est Done, indépendamment de l'approbation du PO","Vrai — uniquement si un stakeholder s'y oppose","Faux — seul le Scrum Master peut bloquer une livraison"],
+answer:[1],trap:"Done = DoD respectée. Le PO ne peut pas 'refuser' un Increment Done.",
+expl:"<strong>Faux.</strong> Un Increment est <strong>Done</strong> s'il respecte la Definition of Done — indépendamment de l'approbation du PO. Le PO décide <strong>quand livrer</strong> l'Increment aux utilisateurs finaux, mais ne peut pas déclarer 'non-Done' un travail qui respecte la DoD."},
+
+{id:46,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Quelle est la différence entre 'priorité' et 'ordre' dans le contexte du Product Backlog ?",
+options:["Il n'y a aucune différence — ce sont des synonymes","L'ordre peut refléter plusieurs critères (valeur, risque, dépendances) pas uniquement la priorité","La priorité est décidée par le PO, l'ordre par les Developers","L'ordre est uniquement technique, la priorité est business"],
+answer:[1],trap:"'Ordered' ≠ 'prioritized' selon le Scrum Guide 2020.",
+expl:"Le Scrum Guide 2020 utilise délibérément le terme <strong>'ordered'</strong> plutôt que 'prioritized'. L'ordre peut refléter <strong>de multiples facteurs</strong> : valeur, risque, dépendances, opportunité d'apprentissage — pas uniquement une priorité unidimensionnelle."},
+
+{id:47,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"What is the MOST important thing a Product Owner should do to ensure the Scrum Team delivers maximum value?",
+options:["Write detailed specifications for every Product Backlog item","Maintain a clear, ordered Product Backlog that reflects the most valuable work","Attend all Scrum events and make all technical decisions","Measure team velocity and ensure it increases every Sprint"],
+answer:[1],trap:null,
+expl:"La chose la plus importante est de <strong>maintenir un Product Backlog clair et ordonné</strong> reflétant le travail le plus précieux. C'est le cœur du rôle du PO. Les spécifications détaillées, les décisions techniques ou la vélocité ne sont pas de sa responsabilité."},
+
+{id:48,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Le Product Owner peut-il imposer aux Developers de travailler le week-end pour finir un Sprint en retard ?",
+options:["Oui, si le Sprint Goal est à risque","Non — le Scrum Guide promeut un rythme soutenable","Oui, en cas d'urgence business critique","Non — seul le Scrum Master a cette autorité"],
+answer:[1],trap:null,
+expl:"<strong>Non.</strong> Le Scrum Guide promeut un <strong>rythme soutenable</strong> (sustainable pace). Le PO ne peut pas imposer des heures supplémentaires. Les Developers s'auto-organisent pour décider comment ils travaillent."},
+
+{id:49,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Comment le Product Owner devrait-il communiquer le Product Goal à la Scrum Team ?",
+options:["Uniquement lors du Sprint Planning","Lors de la Sprint Review uniquement","De façon explicite et accessible à tous en permanence","Uniquement en réponse aux questions des Developers"],
+answer:[2],trap:null,
+expl:"Le PO doit <strong>développer et communiquer explicitement</strong> le Product Goal. Il doit être accessible et compris par toute la Scrum Team en permanence, pas uniquement lors d'événements spécifiques."},
+
+{id:50,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"A stakeholder bypasses the Product Owner and directly asks the Developers to implement a feature. What should the Developers do?",
+options:["Implement it if it seems valuable","Add it to the Sprint Backlog immediately","Redirect the stakeholder to the Product Owner","Ask the Scrum Master to mediate the situation"],
+answer:[2],trap:"Les Developers ne prennent pas de travail en direct des stakeholders — tout passe par le PO.",
+expl:"Les Developers doivent <strong>rediriger le stakeholder vers le Product Owner</strong>. Seul le PO peut décider si un travail entre dans le Product Backlog. Les Developers ne prennent pas de travail directement des stakeholders, même si la demande semble raisonnable."},
+
+// Additional PO questions to reach 125
+{id:51,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Le Product Owner est un membre de la Scrum Team.",
+options:["Vrai","Faux"],
+answer:[0],trap:null,
+expl:"<strong>Vrai.</strong> La Scrum Team comprend <strong>un Product Owner, un Scrum Master et les Developers</strong>. Tous sont membres de la Scrum Team. Il n'y a pas de hiérarchie entre eux."},
+
+{id:52,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Selon le Scrum Guide, qui est responsable d'identifier et de gérer les stakeholders ?",
+options:["Le Scrum Master uniquement","Le Product Owner","Les Developers lors des Sprint Reviews","Le management de l'organisation"],
+answer:[1],trap:null,
+expl:"Le <strong>Product Owner</strong> est responsable d'interagir avec les stakeholders. Il représente leurs intérêts dans le Product Backlog et les engage, notamment lors des Sprint Reviews."},
+
+{id:53,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Un PO souhaite annuler le Product Goal actuel pour en démarrer un nouveau. Que doit-il faire ?",
+options:["Annoncer le changement lors de la prochaine Sprint Review","Obtenir l'approbation de la Scrum Team avant tout changement","Décider souverainement — le PO peut modifier ou abandonner le Product Goal","Demander au Scrum Master d'animer une réunion de transition"],
+answer:[2],trap:null,
+expl:"Le PO peut <strong>décider souverainement</strong> d'accomplir, de faire pivoter ou d'abandonner le Product Goal. Le Scrum Guide dit qu'un Product Goal est soit accompli, soit abandonné — ce n'est pas une décision collective."},
+
+{id:54,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Which statement BEST describes the Product Owner's role in Sprint Planning ?",
+options:["The PO runs the Sprint Planning and assigns work to Developers","The PO proposes why the Sprint creates value and clarifies PBI details; the team creates the Sprint Goal collaboratively","The PO selects which PBIs enter the Sprint","The PO reviews and approves the Sprint Backlog before the Sprint starts"],
+answer:[1],trap:"Sprint Goal = créé collaborativement. Le PO propose la valeur, pas le Goal seul.",
+expl:"Lors du Sprint Planning, le PO <strong>propose pourquoi le Sprint crée de la valeur</strong> et clarifie les PBI. Le Sprint Goal est ensuite créé <strong>collaborativement par toute la Scrum Team</strong>. Ce n'est pas le PO seul qui le définit."},
+
+{id:55,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Qu'arrive-t-il au Product Backlog à la fin d'un Sprint ?",
+options:["Il est archivé et un nouveau est créé","Il reste actif et peut être mis à jour après la Sprint Review","Il est figé jusqu'au prochain Sprint Planning","Il est transféré aux Developers pour planification"],
+answer:[1],trap:null,
+expl:"Le Product Backlog <strong>reste actif en permanence</strong>. Après la Sprint Review, il peut être mis à jour en fonction des retours des stakeholders et des apprentissages du Sprint. C'est un artefact vivant."},
+
+{id:56,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Quel est le rapport entre MVP (Minimum Viable Product) et Scrum ?",
+options:["Un MVP est obligatoire dans Scrum à chaque Sprint","Le Scrum Guide définit précisément ce qu'est un MVP","Le MVP est un concept externe à Scrum que le PO peut utiliser pour guider les décisions","Un MVP remplace le Product Goal dans Scrum"],
+answer:[2],trap:"MVP n'est pas dans le Scrum Guide — c'est un concept Lean Startup.",
+expl:"Le <strong>MVP est un concept externe à Scrum</strong> (issu du Lean Startup d'Eric Ries). Le PO peut l'utiliser comme outil de réflexion stratégique, mais ce n'est pas prescrit par le Scrum Guide. Dans Scrum, l'objectif est de livrer de la valeur à chaque Increment."},
+
+{id:57,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"The Product Owner says: 'The team is too slow, I want them to double their velocity.' What should the Scrum Master do?",
+options:["Help the team find ways to increase velocity","Explain to the PO that velocity is an internal tool, not a performance metric, and coach them on better approaches","Accept the goal and add it to the Sprint Goal","Let the Developers respond directly to the PO's request"],
+answer:[1],trap:"La vélocité n'est pas un KPI de performance — c'est un outil de prévision interne.",
+expl:"Le Scrum Master doit <strong>éduquer le PO</strong> : la vélocité est un outil de prévision interne, pas un indicateur de performance. Exiger de doubler la vélocité crée des mauvaises incitations (estimation gonflée, qualité réduite). Le SM coache le PO sur des approches plus saines."},
+
+{id:58,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Lors de la Sprint Review, qui décide des modifications à apporter au Product Backlog ?",
+options:["Les stakeholders par vote","Le Scrum Master après consultation de l'équipe","Le Product Owner, en tenant compte des retours de tous les participants","L'ensemble de la Scrum Team à la majorité"],
+answer:[2],trap:null,
+expl:"C'est le <strong>Product Owner</strong> qui décide des adaptations du Product Backlog, en s'appuyant sur les retours et insights collectés lors de la Sprint Review. Il reste souverain sur les décisions backlog même en tenant compte des feedbacks."},
+
+{id:59,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Le Product Owner peut-il changer l'ordre du Product Backlog pendant un Sprint ?",
+options:["Non, le Product Backlog est gelé pendant un Sprint","Oui, le Product Backlog peut être mis à jour à tout moment","Oui, mais uniquement lors du refinement officiel","Non, sauf en cas de crise"],
+answer:[1],trap:null,
+expl:"<strong>Oui.</strong> Le Product Backlog peut être <strong>mis à jour à tout moment</strong>. Le PO peut modifier l'ordre, ajouter ou retirer des items. Ce qui est protégé pendant le Sprint, c'est le Sprint Goal — pas le Product Backlog global."},
+
+{id:60,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"A Product Owner has been asked by management to commit to delivering a specific set of features by a fixed date. According to Scrum, what is the best approach?",
+options:["Make the commitment to please management","Refuse — commitments are impossible in Scrum","Explain that Scrum uses Sprint Goals to provide focus, and work with management to define a realistic Product Goal with appropriate expectations","Commit but tell the team to work overtime if needed"],
+answer:[2],trap:null,
+expl:"Le PO doit <strong>éduquer le management</strong> sur comment Scrum fonctionne : les Sprint Goals donnent de la direction, le Product Goal fournit l'objectif à long terme. Les engagements sur des périmètres fixes et des dates fixes vont à l'encontre de l'empirisme de Scrum."},
+
+// PO questions 61-125
+{id:61,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Qui est accountable de s'assurer que les Product Backlog Items sont clairs et compris par les Developers ?",
+options:["Le Scrum Master","Le Product Owner","Les Developers eux-mêmes","Le manager de l'équipe"],
+answer:[1],trap:null,
+expl:"Le PO est accountable de <strong>créer et communiquer clairement les PBI</strong>. Il doit s'assurer que les Developers comprennent les items suffisamment pour les implémenter correctement."},
+
+{id:62,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Quel est le signe d'un Product Backlog bien géré ?",
+options:["Chaque item a une estimation en story points","Les items les plus précieux et mieux compris sont en haut, les moins précis en bas","Tous les items ont le même niveau de détail","Le backlog a exactement 100 items"],
+answer:[1],trap:null,
+expl:"Un backlog bien géré a les <strong>items les plus précieux et les mieux compris en haut</strong> (prêts pour le prochain Sprint) et les items moins certains plus bas (avec moins de détail). C'est le principe du 'refinement progressif'."},
+
+{id:63,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Un Product Owner peut-il travailler à temps partiel pour la Scrum Team ?",
+options:["Non, le PO doit être disponible à 100% en permanence","Oui, mais cela crée un risque d'indisponibilité qui peut freiner l'équipe","Oui, c'est la norme — le PO est rarement à temps plein","Non, c'est explicitement interdit par le Scrum Guide"],
+answer:[1],trap:null,
+expl:"Le Scrum Guide ne prescrit pas un engagement à temps plein du PO, mais souligne qu'il doit être <strong>disponible</strong> pour collaborer. Un PO à temps partiel peut créer des goulots d'étranglement et ralentir l'équipe."},
+
+{id:64,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"Which of the following is the BEST description of what a Product Owner should optimize?",
+options:["The number of features delivered per Sprint","The team's velocity and productivity","The value of the product for stakeholders, customers, and the organization","The speed of Sprint completion"],
+answer:[2],trap:"Optimiser features ou vélocité ≠ optimiser la valeur.",
+expl:"Le PO optimise la <strong>valeur du produit</strong> pour les stakeholders, les clients et l'organisation — pas le nombre de features, la vélocité ou la vitesse. Ces métriques peuvent parfois aller à l'encontre de la valeur réelle."},
+
+{id:65,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Quel terme le Scrum Guide utilise-t-il pour décrire les éléments du Product Backlog ?",
+options:["User Stories","Product Backlog Items (PBI)","Features","Tasks"],
+answer:[1],trap:null,
+expl:"Le Scrum Guide utilise le terme générique <strong>Product Backlog Items (PBI)</strong>. Il ne prescrit pas de format spécifique comme les User Stories — c'est un choix d'équipe. Les PBI peuvent être des User Stories, des bugs, des améliorations techniques, etc."},
+
+{id:66,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Qui crée le Product Backlog ?",
+options:["Le Scrum Master lors du kick-off","Le Product Owner","Les Developers lors du Sprint Planning","L'équipe en commun lors du Sprint Zéro"],
+answer:[1],trap:null,
+expl:"Le <strong>Product Owner</strong> crée et maintient le Product Backlog. C'est son artefact. D'autres peuvent y contribuer mais la création et la maintenance restent sous son accountability."},
+
+{id:67,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Comment le Product Owner devrait-il réagir si les Developers disent qu'un item du backlog est techniquement irréalisable ?",
+options:["Ignorer leur avis et maintenir l'item dans le backlog","Retirer immédiatement l'item du backlog sans discussion","Collaborer avec les Developers pour explorer des alternatives ou reformuler l'objectif","Escalader au Scrum Master pour arbitrage"],
+answer:[2],trap:null,
+expl:"Le PO doit <strong>collaborer avec les Developers</strong> pour comprendre les contraintes et explorer des alternatives. La collaboration est au cœur de Scrum. L'objectif peut être atteint différemment."},
+
+{id:68,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"The Scrum Guide 2020 removed the term 'Definition of Ready'. What does this imply for the Product Owner?",
+options:["PBIs no longer need to be refined before Sprint Planning","The PO must still ensure PBIs are refined enough for Developers to select them in Sprint Planning","The Scrum Master now owns readiness decisions","Developers decide when a PBI is ready without PO input"],
+answer:[1],trap:"DoR n'est pas dans le Scrum Guide 2020 — mais le refinement reste essentiel.",
+expl:"Bien que la <strong>Definition of Ready ne soit pas dans le Scrum Guide</strong>, le PO doit toujours s'assurer que les PBI sont <strong>suffisamment détaillés et clairs</strong> pour que les Developers puissent les sélectionner et les planifier lors du Sprint Planning."},
+
+{id:69,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Quelle est la responsabilité du Product Owner concernant la valeur à court terme vs. à long terme ?",
+options:["Se concentrer uniquement sur la valeur à court terme (Sprint par Sprint)","Équilibrer la valeur à court terme et la viabilité à long terme du produit","Se concentrer uniquement sur le Product Goal à long terme","Laisser les Developers gérer la valeur à court terme"],
+answer:[1],trap:null,
+expl:"Le PO doit <strong>équilibrer</strong> : livrer de la valeur maintenant (Sprint Goals) tout en maintenant la direction à long terme (Product Goal). Optimiser uniquement le court terme peut compromettre la vision produit."},
+
+{id:70,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Un stakeholder demande au PO pourquoi une fonctionnalité qu'il avait demandée n'a pas été développée depuis 3 mois. Comment le PO devrait-il répondre ?",
+options:["Blâmer les Developers pour leur lenteur","Expliquer sa décision d'ordre basée sur la valeur relative des items","Promettre de l'inclure dans le prochain Sprint pour éviter le conflit","Rediriger le stakeholder vers le Scrum Master"],
+answer:[1],trap:null,
+expl:"Le PO est <strong>accountable de ses décisions d'ordre</strong>. Il doit expliquer sa logique (valeur relative, dépendances, autres priorités) au stakeholder. La transparence sur la prise de décision fait partie de son rôle."},
+
+{id:71,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Le Product Backlog peut-il changer en cours de Sprint ?",
+options:["Non, il est gelé pendant le Sprint","Oui, le PO peut l'adapter à tout moment","Oui, mais uniquement avec l'accord des Developers","Oui, uniquement lors du Daily Scrum"],
+answer:[1],trap:null,
+expl:"<strong>Oui.</strong> Le Product Backlog est un artefact vivant qui peut changer à tout moment. Ce qui est protégé pendant un Sprint, c'est le <strong>Sprint Goal</strong> — pas le Product Backlog global."},
+
+{id:72,section:"PO & Product Value",difficulty:"hard",multi:false,
+text:"A Product Owner notices that the team is consistently delivering everything they commit to in Sprint Planning. What should the PO conclude?",
+options:["The team is performing well and the PO should maintain current pressure","The team may be under-committing — the PO should investigate if more value could be delivered","The team is at maximum capacity and no changes are needed","This is the expected Scrum behavior and no action is needed"],
+answer:[1],trap:"Consistamment 'tout livré' peut signifier sous-engagement.",
+expl:"Si l'équipe livre toujours tout sans problème, cela peut indiquer un <strong>sous-engagement</strong> (sous-estimation de leur capacité). Le PO devrait explorer si plus de valeur pourrait être délivrée par Sprint, en collaboration avec les Developers."},
+
+{id:73,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Quelle est la différence entre un PO 'proxy' et un PO 'réel' dans le contexte Scrum ?",
+options:["Il n'y a aucune différence — un proxy PO a les mêmes droits","Un proxy PO est problématique car il ne peut pas prendre de décisions souveraines sur la valeur","Un proxy PO est recommandé dans les grandes organisations","Un proxy PO est géré par le Scrum Master"],
+answer:[1],trap:null,
+expl:"Un <strong>proxy PO</strong> (intermédiaire) est problématique car il n'a généralement pas l'autorité pour prendre des décisions souveraines sur la valeur. Le Scrum Guide stipule que le PO doit être une personne ayant réellement l'autorité pour gérer le backlog."},
+
+{id:74,section:"PO & Product Value",difficulty:"easy",multi:false,
+text:"Que signifie 'maximiser la valeur du produit' pour le Product Owner ?",
+options:["Livrer le maximum de fonctionnalités possible","S'assurer que le produit génère le maximum de revenus","Prendre des décisions qui maximisent la valeur pour les parties prenantes — la définition de valeur est contextuelle","Réduire les coûts de développement au minimum"],
+answer:[2],trap:null,
+expl:"'Maximiser la valeur' est contextuel — cela peut signifier revenus, satisfaction client, impact social, réduction de risque, etc. Le PO doit définir ce que <strong>la valeur signifie pour son contexte spécifique</strong> et prendre des décisions en conséquence."},
+
+{id:75,section:"PO & Product Value",difficulty:"medium",multi:false,
+text:"Lors d'un Sprint Planning, le Product Owner présente les PBI du sommet du Product Backlog. Les Developers estiment qu'ils peuvent en sélectionner 5. Le PO insiste pour en inclure 8. Que devrait-il se passer ?",
+options:["Les Developers doivent accepter — le PO est accountable de la valeur","Les Developers maintiennent leur sélection — eux seuls évaluent leur capacité","Le Scrum Master tranche en faveur du PO","Les 8 items sont inclus mais avec une DoD allégée"],
+answer:[1],trap:"Les Developers sont les seuls juges de leur propre capacité.",
+expl:"Les <strong>Developers sont les seuls juges de leur capacité</strong>. Le PO ne peut pas imposer un volume de travail. En revanche, il peut négocier sur le périmètre ou la découpe des PBI pour trouver un accord mutuellement acceptable."},
+
+/* ══════════════════════════════════════════════════════════
+   BUCKET 2 : SCRUM FRAMEWORK (75 questions)
+   ══════════════════════════════════════════════════════════ */
+
+// EASY
+{id:101,section:"Scrum Framework",difficulty:"easy",multi:false,
+text:"Quels sont les trois piliers de l'empirisme sur lesquels repose Scrum ?",
+options:["Planification, Exécution, Contrôle","Transparence, Inspection, Adaptation","Communication, Collaboration, Livraison","Vitesse, Qualité, Valeur"],
+answer:[1],trap:null,
+expl:"Scrum repose sur l'empirisme avec trois piliers : <strong>Transparence</strong> (visibilité partagée), <strong>Inspection</strong> (examiner fréquemment) et <strong>Adaptation</strong> (ajuster si nécessaire). Ces piliers sont fondamentaux au Scrum Guide 2020."},
+
+{id:102,section:"Scrum Framework",difficulty:"easy",multi:false,
+text:"Scrum est défini comme :",
+options:["Une méthodologie prescriptive pour le développement logiciel","Un processus agile avec des rôles et étapes rigides","Un framework léger qui aide à créer de la valeur grâce à des solutions adaptatives","Un ensemble d'outils de gestion de projet"],
+answer:[2],trap:"Scrum = framework léger, pas une méthodologie.",
+expl:"Le Scrum Guide définit Scrum comme un <strong>framework léger</strong> (lightweight framework) — pas une méthodologie. Il fournit juste assez de structure pour que les équipes y intègrent leurs propres pratiques adaptées à leur contexte."},
+
+{id:103,section:"Scrum Framework",difficulty:"easy",multi:false,
+text:"Quelle est la durée maximale d'un Sprint ?",
+options:["2 semaines","3 semaines","1 mois","6 semaines"],
+answer:[2],trap:null,
+expl:"Un Sprint dure au maximum <strong>1 mois</strong> (4 semaines). La durée doit être cohérente et fixe tout au long du développement. Des Sprints plus courts créent des cycles d'apprentissage plus fréquents."},
+
+{id:104,section:"Scrum Framework",difficulty:"easy",multi:false,
+text:"Scrum est uniquement applicable au développement logiciel.",
+options:["Vrai","Faux"],
+answer:[1],trap:null,
+expl:"<strong>Faux.</strong> Le Scrum Guide 2020 a retiré toute référence spécifique au 'logiciel'. Scrum peut s'appliquer dans n'importe quel domaine complexe : hardware, marketing, RH, éducation, etc."},
+
+{id:105,section:"Scrum Framework",difficulty:"easy",multi:false,
+text:"Sur quelle théorie Scrum est-il fondé ?",
+options:["La théorie des contraintes","L'empirisme et la pensée lean","La gestion de projet prédictive","La théorie de la complexité de Cynefin"],
+answer:[1],trap:null,
+expl:"Scrum est fondé sur <strong>l'empirisme et la pensée lean</strong>. L'empirisme signifie que la connaissance vient de l'expérience et des décisions basées sur l'observation. La pensée lean réduit le gaspillage et se concentre sur l'essentiel."},
+
+{id:106,section:"Scrum Framework",difficulty:"easy",multi:false,
+text:"Le Scrum Guide 2020 a été créé par :",
+options:["Mike Cohn et Ken Schwaber","Ken Schwaber et Jeff Sutherland","Jeff Sutherland et Mike Beedle","Alistair Cockburn et Ward Cunningham"],
+answer:[1],trap:null,
+expl:"Le Scrum Guide a été créé par <strong>Ken Schwaber et Jeff Sutherland</strong>, les co-créateurs de Scrum. Ils maintiennent le guide indépendamment depuis 2010. La version actuelle date de novembre 2020."},
+
+{id:107,section:"Scrum Framework",difficulty:"easy",multi:false,
+text:"Quelle taille maximale est recommandée pour une Scrum Team ?",
+options:["5 personnes","8 personnes","10 personnes","15 personnes"],
+answer:[2],trap:null,
+expl:"Le Scrum Guide recommande <strong>10 personnes ou moins</strong> par Scrum Team. Des équipes plus grandes ont du mal à maintenir la cohésion, la communication et la collaboration efficace."},
+
+{id:108,section:"Scrum Framework",difficulty:"easy",multi:false,
+text:"Scrum est-il considéré comme prescriptif ou minimaliste ?",
+options:["Très prescriptif — il définit tout en détail","Minimaliste — il fournit un cadre minimal et laisse les équipes décider du reste","Ni l'un ni l'autre — Scrum est flexible","Prescriptif pour les rôles, minimaliste pour les pratiques"],
+answer:[1],trap:null,
+expl:"Scrum est <strong>intentionnellement minimaliste</strong>. Le Scrum Guide est délibérément court (~13 pages). Il définit des règles minimales et laisse les équipes choisir les pratiques complémentaires adaptées à leur contexte."},
+
+// MEDIUM
+{id:109,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Qu'est-ce que 'l'auto-organisation' (self-management) signifie dans Scrum 2020 ?",
+options:["L'équipe n'a besoin d'aucun management externe","L'équipe décide qui fait quoi, comment et quand pour atteindre ses objectifs","L'équipe peut ignorer les décisions du Product Owner","L'équipe gère ses propres ressources financières"],
+answer:[1],trap:null,
+expl:"Le Scrum Guide 2020 utilise le terme <strong>'self-managing'</strong> (auto-gérée) : l'équipe décide en interne <strong>qui fait quoi, comment et quand</strong>. Personne ne leur impose la façon de travailler. C'est différent d'être 'sans management'."},
+
+{id:110,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Le Scrum Guide 2020 a remplacé le terme 'Development Team' par :",
+options:["Dev Team","Équipe technique","Developers","Engineering Team"],
+answer:[2],trap:"'Developers' sans article — changement clé du Guide 2020.",
+expl:"Le Scrum Guide 2020 remplace 'Development Team' par <strong>Developers</strong>. Ce changement souligne que quiconque crée l'Increment (designer, testeur, analyste, développeur) est un Developer dans Scrum."},
+
+{id:111,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Comment Scrum gère-t-il les environnements complexes et incertains ?",
+options:["En planifiant tout en détail avant de commencer","En utilisant l'empirisme : inspecter et adapter fréquemment","En réduisant la taille de l'équipe pour plus d'agilité","En évitant les projets trop complexes"],
+answer:[1],trap:null,
+expl:"Scrum gère la complexité via <strong>l'empirisme</strong> : livrer de petits incréments fréquents, inspecter les résultats et adapter la direction. C'est plus efficace que de planifier exhaustivement dans l'incertitude."},
+
+{id:112,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Le Scrum Guide prescrit-il des outils spécifiques (JIRA, Trello, etc.) pour gérer le Product Backlog ?",
+options:["Oui, JIRA est l'outil officiel recommandé","Oui, un tableau physique est obligatoire","Non — le Scrum Guide ne prescrit aucun outil","Oui, mais uniquement pour les équipes distribuées"],
+answer:[2],trap:null,
+expl:"<strong>Non.</strong> Le Scrum Guide ne prescrit aucun outil. Les équipes choisissent librement leurs outils. Un backlog peut être géré sur un tableau blanc, dans Excel, JIRA, Trello, Notion — l'outil n'est pas prescrit."},
+
+{id:113,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Quelle est la différence entre 'transparence' et 'visibilité' dans le contexte de Scrum ?",
+options:["Ce sont des synonymes dans Scrum","La transparence va au-delà de la visibilité : elle implique une compréhension partagée, pas juste voir l'information","La visibilité concerne les outils, la transparence les personnes","La transparence est prescrite, la visibilité est optionnelle"],
+answer:[1],trap:null,
+expl:"La <strong>transparence</strong> dans Scrum va au-delà de rendre l'information visible. Elle requiert que les artefacts soient suffisamment transparents pour que ceux qui les inspectent aient une <strong>compréhension partagée</strong> de ce qu'ils représentent."},
+
+{id:114,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Qu'est-ce que 'lean thinking' apporte à Scrum ?",
+options:["Des métriques de performance standardisées","La réduction du gaspillage et la focalisation sur l'essentiel","Des rôles supplémentaires comme le Business Analyst","Une phase de planification plus longue avant les Sprints"],
+answer:[1],trap:null,
+expl:"La <strong>pensée lean</strong> dans Scrum favorise la <strong>réduction du gaspillage</strong> (travail inutile, fonctionnalités non demandées) et la focalisation sur ce qui crée vraiment de la valeur. C'est une des fondations théoriques de Scrum."},
+
+{id:115,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Qu'arrive-t-il si une Scrum Team n'a pas de Scrum Master ?",
+options:["La Scrum Team peut fonctionner sans Scrum Master","Le Product Owner prend le rôle de Scrum Master","Elle n'est pas conforme à Scrum — le SM est obligatoire","Le Developer le plus senior assume ce rôle"],
+answer:[2],trap:null,
+expl:"Le Scrum Master est l'une des trois accountabilities obligatoires dans Scrum. Sans SM, la Scrum Team <strong>n'est pas conforme au framework Scrum</strong>. Le SM est essentiel pour coacher l'équipe et l'organisation."},
+
+{id:116,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Scrum peut-il être utilisé pour des projets non-technologiques ?",
+options:["Non, Scrum est exclusivement pour le développement logiciel","Oui — le Scrum Guide 2020 a retiré toute référence spécifique au logiciel","Oui, mais uniquement avec des modifications majeures","Non, les rôles ne sont pas adaptables à d'autres domaines"],
+answer:[1],trap:null,
+expl:"<strong>Oui.</strong> Le Scrum Guide 2020 a délibérément supprimé les références au 'logiciel'. Scrum est applicable à tout domaine complexe : marketing, RH, éducation, recherche, projets créatifs, etc."},
+
+// HARD
+{id:117,section:"Scrum Framework",difficulty:"hard",multi:false,
+text:"Which statement about the Scrum Framework is MOST accurate?",
+options:["Scrum provides a complete project management methodology with all necessary tools and techniques","Scrum is a lightweight framework that requires teams to add their own practices and tools","Scrum prescribes specific engineering practices like TDD and Continuous Integration","Scrum is a subset of the SAFe framework"],
+answer:[1],trap:null,
+expl:"Scrum est un <strong>framework léger</strong> qui fournit le cadre minimal (rôles, événements, artefacts) et laisse les équipes <strong>choisir leurs propres pratiques</strong>. Il ne prescrit pas de pratiques d'ingénierie spécifiques (contrairement à XP)."},
+
+{id:118,section:"Scrum Framework",difficulty:"hard",multi:false,
+text:"A Scrum Team is working in a highly regulated industry requiring extensive documentation. How should they handle this in Scrum?",
+options:["Abandon Scrum — it's incompatible with regulated environments","Create a separate 'documentation Sprint' after each delivery Sprint","Include documentation as part of their Definition of Done, ensuring it's created incrementally","Ask management to waive documentation requirements for Scrum teams"],
+answer:[2],trap:null,
+expl:"La documentation peut être intégrée dans la <strong>Definition of Done</strong>. Chaque PBI doit respecter la DoD avant d'être Done — y compris créer la documentation requise. Scrum est compatible avec les environnements régulés si la DoD est bien définie."},
+
+{id:119,section:"Scrum Framework",difficulty:"hard",multi:false,
+text:"Which of these is NOT part of the Scrum Framework according to the Scrum Guide 2020?",
+options:["Sprint Retrospective","Sprint Review","Sprint Zero","Sprint Planning"],
+answer:[2],trap:"Sprint Zero n'existe pas dans le Scrum Guide.",
+expl:"<strong>Sprint Zero n'est pas défini dans le Scrum Guide</strong>. C'est une pratique non officielle parfois utilisée pour la mise en place initiale. Selon Scrum, chaque Sprint doit produire un Increment Done — y compris le premier Sprint."},
+
+{id:120,section:"Scrum Framework",difficulty:"hard",multi:false,
+text:"Scrum requires the use of story points for estimation.",
+options:["True — story points are the official Scrum estimation technique","False — Scrum prescribes no specific estimation technique","True — but only for the first few Sprints","False — only time-based estimation is allowed in Scrum"],
+answer:[1],trap:"Scrum ne prescrit AUCUNE technique d'estimation.",
+expl:"<strong>Faux.</strong> Le Scrum Guide ne prescrit <strong>aucune technique d'estimation</strong>. Story points, heures, tailles de t-shirt, #NoEstimates — l'équipe choisit librement. L'important est que les Developers comprennent la charge de travail."},
+
+{id:121,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Le Scrum Guide 2020 décrit Scrum comme reposant sur quels concepts ?",
+options:["Agilité, Lean et DevOps","Empirisme et pensée lean","Manifeste Agile et principes XP","Kanban et gestion du flux"],
+answer:[1],trap:null,
+expl:"Le Scrum Guide 2020 dit que Scrum est fondé sur <strong>l'empirisme et la pensée lean</strong>. L'empirisme : la connaissance vient de l'expérience. La pensée lean : réduire le gaspillage, se concentrer sur l'essentiel."},
+
+{id:122,section:"Scrum Framework",difficulty:"hard",multi:false,
+text:"An organization wants to adopt Scrum but insists on keeping their Project Manager role with authority over the Scrum Team. What is the most accurate Scrum perspective?",
+options:["This is fine — Scrum supports project managers","A Project Manager role can coexist if they don't interfere with Scrum accountabilities","Scrum doesn't define a Project Manager role, and adding one with authority over the team undermines self-management","The Scrum Master can also act as Project Manager"],
+answer:[2],trap:null,
+expl:"Scrum ne définit pas de rôle de <strong>Project Manager</strong>. Ajouter un PM avec autorité sur la Scrum Team <strong>mine l'auto-gestion</strong>. Les accountabilities de PM (planification, reporting, etc.) sont distribuées dans Scrum : PO gère la valeur, SM gère le processus, Developers s'auto-organisent."},
+
+{id:123,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"La théorie empirique de Scrum stipule que la connaissance vient de :",
+options:["Une analyse complète avant le démarrage","L'expérience et des décisions basées sur l'observation","La documentation exhaustive des exigences","L'expertise des experts internes"],
+answer:[1],trap:null,
+expl:"L'<strong>empirisme</strong> dans Scrum : la connaissance vient de <strong>l'expérience et des décisions basées sur l'observation</strong>. On apprend en faisant, en livrant, en obtenant du feedback — pas en planifiant tout à l'avance."},
+
+{id:124,section:"Scrum Framework",difficulty:"hard",multi:false,
+text:"What does the Scrum Guide mean when it says Scrum is 'immutable'?",
+options:["Scrum rules can never be updated by Schwaber and Sutherland","The core Scrum rules work as a whole — implementing only parts is Scrum but may produce unexpected results","Teams must implement Scrum exactly as written with no adaptation","Scrum is the same in all contexts and industries"],
+answer:[1],trap:null,
+expl:"'Immuable' dans le Scrum Guide signifie que les règles de Scrum fonctionnent comme un <strong>tout cohérent</strong>. Implémenter seulement certaines parties peut fonctionner mais peut produire des résultats inattendus. Changer une règle fondamentale change fondamentalement Scrum."},
+
+{id:125,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Dans Scrum, que signifie 'pluridisciplinaire' (cross-functional) pour une Scrum Team ?",
+options:["L'équipe a des membres de différents départements de l'entreprise","L'équipe possède collectivement toutes les compétences nécessaires pour livrer un Increment Done chaque Sprint","Chaque membre de l'équipe maîtrise toutes les compétences","L'équipe travaille sur plusieurs produits simultanément"],
+answer:[1],trap:null,
+expl:"'Pluridisciplinaire' signifie que la Scrum Team possède <strong>collectivement toutes les compétences nécessaires</strong> pour créer un Increment Done. Chaque individu n'a pas à tout savoir faire, mais l'équipe dans son ensemble peut livrer sans dépendances externes."},
+
+{id:126,section:"Scrum Framework",difficulty:"easy",multi:false,
+text:"Le Scrum Guide prescrit-il une méthode d'estimation spécifique pour les PBI ?",
+options:["Oui, les story points sont obligatoires","Oui, les heures doivent être utilisées","Non, aucune méthode d'estimation n'est prescrite","Oui, Planning Poker est la méthode officielle"],
+answer:[2],trap:null,
+expl:"<strong>Non.</strong> Le Scrum Guide ne prescrit <strong>aucune méthode d'estimation</strong>. Story points, t-shirts, heures, relative sizing — l'équipe est libre de choisir ce qui lui convient, ou même de ne pas estimer (#NoEstimates)."},
+
+{id:127,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Scrum garantit-il le succès d'un projet ?",
+options:["Oui, si le framework est correctement appliqué","Non — Scrum ne garantit rien, il révèle les problèmes rapidement","Oui, si le PO fait bien son travail","Oui, car le Scrum Guide est basé sur des décennies de recherche"],
+answer:[1],trap:null,
+expl:"<strong>Non.</strong> Scrum ne garantit pas le succès. Il <strong>révèle rapidement les problèmes</strong> et inefficacités grâce à l'empirisme. Les équipes peuvent alors adapter leur approche. Le succès dépend de nombreux facteurs humains et organisationnels."},
+
+{id:128,section:"Scrum Framework",difficulty:"hard",multi:false,
+text:"A Scrum Team has been told by management to skip the Sprint Retrospective to save time. What is the correct Scrum response?",
+options:["Agree if the Scrum Master approves","This violates Scrum — all events are mandatory","Only the Scrum Master can decide to skip the Retrospective","The team can vote on whether to hold the Retrospective"],
+answer:[1],trap:null,
+expl:"Tous les événements Scrum sont <strong>obligatoires</strong>. Supprimer la Sprint Rétrospective viole le framework Scrum. Le Scrum Master devrait éduquer le management sur l'importance de cet événement pour l'amélioration continue."},
+
+{id:129,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Les 'règles de Scrum' sont définies dans quel document ?",
+options:["Le Product Backlog","Le Manifeste Agile","Le Scrum Guide","Les politiques de l'organisation"],
+answer:[2],trap:null,
+expl:"Les règles de Scrum sont définies dans le <strong>Scrum Guide</strong>, maintenu par Ken Schwaber et Jeff Sutherland. C'est la seule référence officielle. Le Manifeste Agile est complémentaire mais ne définit pas Scrum."},
+
+{id:130,section:"Scrum Framework",difficulty:"easy",multi:false,
+text:"Combien d'accountabilities (rôles) définit Scrum ?",
+options:["2 (PO et SM)","3 (PO, SM et Developers)","4 (PO, SM, Developers et Stakeholders)","5 (PO, SM, Lead Dev, QA et BA)"],
+answer:[1],trap:null,
+expl:"Scrum définit <strong>3 accountabilities</strong> : Product Owner, Scrum Master et Developers. Les stakeholders ne sont pas une accountability Scrum — ils interagissent avec la Scrum Team mais n'en font pas partie."},
+
+{id:131,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Qu'est-ce qui différencie Scrum d'une approche Waterfall classique ?",
+options:["Scrum est plus rapide car il supprime toute documentation","Scrum livre de la valeur de manière incrémentale et inspecte régulièrement les résultats","Scrum ne requiert pas de planification","Scrum supprime la nécessité de tests"],
+answer:[1],trap:null,
+expl:"La différence fondamentale : Scrum <strong>livre de la valeur de manière incrémentale</strong> et permet d'inspecter et d'adapter fréquemment. Le Waterfall planifie tout en amont et livre tardivement. Scrum réduit le risque en obtenant du feedback rapidement."},
+
+{id:132,section:"Scrum Framework",difficulty:"hard",multi:false,
+text:"Which statement about Scrum's empirical approach is MOST accurate?",
+options:["Scrum eliminates the need for planning through frequent adaptation","Scrum balances planning with frequent inspection and adaptation, acknowledging that plans are hypotheses","Scrum requires no planning — everything is reactive","Scrum plans every detail upfront but adapts implementation"],
+answer:[1],trap:null,
+expl:"L'empirisme de Scrum <strong>équilibre</strong> la planification avec l'inspection et l'adaptation fréquentes. Les plans sont des hypothèses qui doivent être vérifiées. La planification reste importante, mais elle est incrémentale et adaptative."},
+
+{id:133,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Qu'est-ce qu'une Scrum Team 'cohésive' selon le Scrum Guide ?",
+options:["Une équipe où tous les membres ont les mêmes compétences","Une équipe qui se concentre sur un seul objectif à la fois et travaille collaborativement","Une équipe localisée dans le même bureau","Une équipe sans conflits internes"],
+answer:[1],trap:null,
+expl:"Une équipe <strong>cohésive</strong> dans Scrum se concentre sur un seul objectif (Product Goal, Sprint Goal) et travaille de manière collaborative. Elle est plus qu'une collection d'individus — c'est une unité qui s'auto-gère."},
+
+{id:134,section:"Scrum Framework",difficulty:"hard",multi:false,
+text:"Scrum requires a Sprint to produce a 'Done' Increment even if no features are completed. True or False?",
+options:["True — even if empty, an Increment must be declared","False — if no PBIs meet the Definition of Done, there is no Increment","True — the Increment is the sum of all work done","False — only if the Sprint Goal is achieved"],
+answer:[1],trap:null,
+expl:"<strong>Faux.</strong> Si aucun PBI ne respecte la Definition of Done, <strong>il n'y a pas d'Increment</strong>. Le Scrum Guide définit l'Increment comme la somme de tous les PBI conformes à la DoD. Un Increment vide n'est pas un Increment."},
+
+{id:135,section:"Scrum Framework",difficulty:"medium",multi:false,
+text:"Quelle est la relation entre Scrum et le Manifeste Agile ?",
+options:["Scrum a créé le Manifeste Agile","Le Manifeste Agile a inspiré Scrum, mais ils sont indépendants","Scrum est le seul framework compatible avec le Manifeste Agile","Le Manifeste Agile est un sous-ensemble du Scrum Guide"],
+answer:[1],trap:null,
+expl:"Scrum a précédé le Manifeste Agile (Scrum depuis 1995, Manifeste en 2001). Ils sont <strong>complémentaires mais indépendants</strong>. Scrum s'aligne avec les valeurs agiles mais n'en dépend pas — le Scrum Guide est sa propre référence."},
+
+/* ══════════════════════════════════════════════════════════
+   BUCKET 3 : SCRUM TEAM (75 questions)
+   ══════════════════════════════════════════════════════════ */
+
+// EASY
+{id:201,section:"Scrum Team",difficulty:"easy",multi:false,
+text:"La Scrum Team est composée de :",
+options:["Un PO, un SM et les Developers","Un PO, un SM, des Developers et des stakeholders clés","Un PO et les Developers uniquement","Un SM et les Developers uniquement"],
+answer:[0],trap:"Stakeholders ≠ membres de la Scrum Team.",
+expl:"La Scrum Team est composée de <strong>un Product Owner, un Scrum Master et les Developers</strong>. Les stakeholders ne font pas partie de la Scrum Team — ils interagissent avec elle."},
+
+{id:202,section:"Scrum Team",difficulty:"easy",multi:false,
+text:"Il y a-t-il une hiérarchie dans une Scrum Team ?",
+options:["Oui, le PO est le manager","Oui, le SM est le chef d'équipe","Non, il n'y a pas de hiérarchie","Oui, le Developer senior est responsable"],
+answer:[2],trap:null,
+expl:"<strong>Non.</strong> Il n'y a <strong>pas de hiérarchie</strong> dans une Scrum Team. Chaque accountability a ses responsabilités propres, mais personne n'est 'chef' des autres. C'est une équipe d'égaux avec des rôles distincts."},
+
+{id:203,section:"Scrum Team",difficulty:"easy",multi:false,
+text:"Qui est accountable de l'efficacité de la Scrum Team ?",
+options:["Le Product Owner","Le Scrum Master","Les Developers","Le management"],
+answer:[1],trap:null,
+expl:"Le <strong>Scrum Master</strong> est accountable de l'efficacité de la Scrum Team. Il y parvient en aidant l'équipe à améliorer ses pratiques dans le cadre de Scrum. Il coache, facilite et supprime les obstacles."},
+
+{id:204,section:"Scrum Team",difficulty:"easy",multi:false,
+text:"Les Developers sont-ils responsables de créer l'Increment conforme à la Definition of Done ?",
+options:["Non — c'est la responsabilité du PO","Oui — les Developers sont accountables de créer l'Increment","Non — le SM valide la conformité à la DoD","Oui, mais seulement le tech lead signe l'Increment"],
+answer:[1],trap:null,
+expl:"<strong>Oui.</strong> Les <strong>Developers sont accountables</strong> de créer un Increment Done chaque Sprint. Ils s'auto-organisent pour décider comment livrer un Increment conforme à la DoD."},
+
+{id:205,section:"Scrum Team",difficulty:"easy",multi:false,
+text:"Une Scrum Team peut avoir des sous-équipes pour différentes spécialités.",
+options:["Vrai, si l'équipe est grande","Faux — il n'y a pas de sous-équipes dans une Scrum Team","Vrai, pour les projets complexes","Faux — sauf approbation du Scrum Master"],
+answer:[1],trap:null,
+expl:"<strong>Faux.</strong> Le Scrum Guide est explicite : <strong>pas de sous-équipes ni de hiérarchie</strong> dans une Scrum Team. C'est une seule unité cohésive et pluridisciplinaire."},
+
+// MEDIUM
+{id:206,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Le Scrum Master sert la Scrum Team en :",
+options:["Prenant les décisions techniques à la place de l'équipe","Coachant les membres de l'équipe en autonomie et auto-gestion","Gérant les personnes et en évaluant leurs performances","Définissant le Sprint Goal lors du Sprint Planning"],
+answer:[1],trap:null,
+expl:"Le SM sert la Scrum Team en <strong>coachant les membres en autonomie et auto-gestion</strong>, en aidant l'équipe à se concentrer sur le Sprint Goal, en supprimant les obstacles, et en facilitant les événements Scrum."},
+
+{id:207,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Comment le Scrum Master aide-t-il l'organisation ?",
+options:["En gérant les budgets et les ressources","En dirigeant les transformations agiles de façon autoritaire","En coachant l'organisation dans son adoption de Scrum et en supprimant les obstacles inter-équipes","En remplaçant les managers lors des conflits"],
+answer:[2],trap:null,
+expl:"Le SM sert l'organisation en <strong>coachant l'adoption de Scrum</strong>, en aidant à comprendre et à mettre en place l'empirisme, et en supprimant les obstacles qui empêchent la Scrum Team d'être efficace."},
+
+{id:208,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Un Developer expérimenté pense que le Sprint Goal choisi est mauvais. Que devrait-il faire ?",
+options:["Refuser de travailler sur le Sprint","Exprimer ses préoccupations lors du Sprint Planning avant que le Sprint Goal soit finalisé","Ignorer le Sprint Goal et travailler selon ses propres priorités","Contacter directement les stakeholders pour changer la direction"],
+answer:[1],trap:null,
+expl:"La bonne approche est d'<strong>exprimer ses préoccupations lors du Sprint Planning</strong>, quand le Sprint Goal n'est pas encore finalisé. Une fois le Sprint Goal accepté et le Sprint lancé, l'équipe s'engage à travailler vers cet objectif."},
+
+{id:209,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Le Scrum Master peut-il aussi être le Product Owner ?",
+options:["Oui, c'est même recommandé","Non, cela crée un conflit d'intérêts entre deux accountabilities opposées","Oui, uniquement dans les petites startups","Oui, si le management l'approuve"],
+answer:[1],trap:null,
+expl:"Combiner SM et PO crée un <strong>conflit d'intérêts majeur</strong> : le PO optimise la valeur (plus est mieux), le SM protège le processus (ce qui inclut protéger l'équipe de la surcharge). Ce sont des tensions constructives qui doivent être gérées par des personnes différentes."},
+
+{id:210,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Les Developers s'engagent sur quel objectif lors du Sprint Planning ?",
+options:["Sur la livraison de tous les PBI sélectionnés","Sur le Sprint Goal","Sur la vélocité cible du Sprint","Sur la date de livraison finale du produit"],
+answer:[1],trap:"Engagement = Sprint Goal, pas sur chaque PBI individuellement.",
+expl:"Les Developers s'engagent sur le <strong>Sprint Goal</strong> — pas sur chaque PBI individuellement. Le périmètre des PBI peut être adapté si nécessaire, mais le Sprint Goal est un engagement ferme."},
+
+{id:211,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Quel est le rôle du Scrum Master lors du Daily Scrum ?",
+options:["Animer la réunion et recueillir les rapports d'avancement","Veiller à ce que l'événement ait lieu et soit respecté — mais ne pas l'animer","Prendre des décisions sur les obstacles identifiés","Informer le management de la progression"],
+answer:[1],trap:"Le Daily Scrum N'est PAS animé par le SM — il appartient aux Developers.",
+expl:"Le SM <strong>veille à ce que l'événement existe</strong> et se tient dans sa timebox, mais il n'anime pas le Daily Scrum. C'est un événement des Developers. Le SM peut y assister mais n'est pas requis."},
+
+{id:212,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Une Scrum Team d'une grande organisation souhaite inclure 15 membres pour couvrir toutes les spécialités. Que devrait-il se passer ?",
+options:["C'est acceptable si le projet le requiert","La Scrum Team devrait être divisée en 2 équipes travaillant sur le même produit avec un Product Backlog commun","Le Scrum Master peut approuver une exception","C'est obligatoire si toutes les compétences sont nécessaires"],
+answer:[1],trap:null,
+expl:"15 membres dépassent la taille recommandée (≤10). La solution est de <strong>diviser en 2 équipes Scrum</strong> travaillant sur le même produit, partageant le même Product Backlog et le même Product Owner."},
+
+// HARD
+{id:213,section:"Scrum Team",difficulty:"hard",multi:false,
+text:"What is the MOST accurate description of the Scrum Master's relationship with Developers?",
+options:["The Scrum Master manages the Developers' daily work","The Scrum Master coaches the Developers on Scrum and helps remove impediments — but does not manage their work","The Scrum Master acts as the technical lead for the Developers","The Scrum Master assigns tasks to Developers during Sprint Planning"],
+answer:[1],trap:null,
+expl:"Le SM <strong>coache les Developers</strong> sur Scrum et les aide à supprimer les obstacles. Il ne gère pas leur travail quotidien, n'assigne pas de tâches et n'est pas leur manager. Les Developers s'auto-gèrent."},
+
+{id:214,section:"Scrum Team",difficulty:"hard",multi:false,
+text:"The Scrum Master is told by management that they must report on individual Developer productivity. What should the Scrum Master do?",
+options:["Agree and implement individual reporting","Refuse outright and threaten to quit","Educate management on how Scrum measures team-level outcomes rather than individual productivity","Delegate this request to the Product Owner"],
+answer:[2],trap:null,
+expl:"Le SM doit <strong>éduquer le management</strong> : Scrum mesure les <strong>outcomes collectifs</strong> (valeur livrée, qualité de l'Increment) pas la productivité individuelle. Mesurer individuellement mine la collaboration et l'auto-gestion."},
+
+{id:215,section:"Scrum Team",difficulty:"hard",multi:false,
+text:"During the Sprint, a Developer realizes they are blocked and the issue requires management intervention. What is the correct Scrum approach?",
+options:["The Developer escalates directly to management","The Developer mentions it at the Daily Scrum so the Scrum Master can help remove the impediment","The Developer waits until the Sprint Review to mention it","The Developer asks the Product Owner to resolve it"],
+answer:[1],trap:null,
+expl:"Le Developer <strong>soulève l'obstacle lors du Daily Scrum</strong>. Le SM est alors accountable d'aider à le <strong>supprimer</strong> — y compris en faisant appel au management si nécessaire. C'est précisément le rôle du SM."},
+
+{id:216,section:"Scrum Team",difficulty:"hard",multi:false,
+text:"A Developer consistently produces low-quality work. According to Scrum, what should happen?",
+options:["The Scrum Master fires the Developer","The Product Owner removes them from the team","The Scrum Team addresses the issue collectively — they are accountable as a group","The lead Developer takes over their work"],
+answer:[2],trap:null,
+expl:"La <strong>Scrum Team est collectivement accountable</strong> de livrer un Increment de qualité. Elle doit adresser le problème ensemble (Retrospective, coaching interne, etc.). Le SM peut coacher. La gestion des personnes reste de la responsabilité de l'organisation."},
+
+{id:217,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Qu'est-ce qui distingue 'accountability' de 'responsibility' dans le contexte de Scrum ?",
+options:["Ce sont des synonymes dans Scrum","L'accountability est non-transférable (résultat final), la responsibility peut être déléguée (activité)","La responsibility est collective, l'accountability est individuelle","L'accountability concerne les artefacts, la responsibility les événements"],
+answer:[1],trap:"Accountability ≠ Responsibility — distinction fondamentale.",
+expl:"L'<strong>accountability</strong> est la responsabilité finale non-transférable du résultat. La <strong>responsibility</strong> est la prise en charge d'une activité, qui peut être déléguée. Ex: le PO est accountable du backlog mais peut déléguer des activités d'écriture."},
+
+{id:218,section:"Scrum Team",difficulty:"easy",multi:false,
+text:"Le Scrum Master est-il un chef de projet ?",
+options:["Oui, c'est essentiellement le même rôle","Non, le SM est un leader servant qui facilite et coache","Oui, dans les organisations avec des structures matricielles","Non, mais il a une autorité hiérarchique sur les Developers"],
+answer:[1],trap:null,
+expl:"<strong>Non.</strong> Le SM est un <strong>leader servant</strong>, pas un chef de projet. Il ne gère pas les gens, ne planifie pas les tâches, ne suit pas les métriques de performance individuelle. Il coache, facilite et supprime les obstacles."},
+
+{id:219,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Un Developer est spécialisé uniquement en tests QA. Est-il un Developer au sens Scrum ?",
+options:["Non, seuls les développeurs de code sont des Developers","Oui — tout membre qui contribue à créer l'Increment est un Developer dans Scrum","Non, il devrait avoir un rôle séparé de QA","Oui, mais uniquement s'il apprend aussi à coder"],
+answer:[1],trap:null,
+expl:"<strong>Oui.</strong> Dans Scrum, <strong>tout membre qui contribue à créer l'Increment</strong> (développeurs, testeurs, designers, analystes, etc.) est un Developer. Le terme ne désigne pas uniquement les codeurs."},
+
+{id:220,section:"Scrum Team",difficulty:"hard",multi:false,
+text:"The Scrum Master notices that the Product Owner is making technical decisions that should belong to the Developers. What should the Scrum Master do?",
+options:["Let it happen — the PO has final authority","Coach the PO to focus on the 'what' and let Developers decide the 'how'","Report the issue to management","Ask the lead Developer to confront the PO directly"],
+answer:[1],trap:null,
+expl:"Le SM doit <strong>coacher le PO</strong> pour qu'il se concentre sur le 'quoi' (définir la valeur, ordonner le backlog) et laisser les Developers décider du 'comment' (implémentation technique). C'est une violation de la séparation des accountabilities."},
+
+{id:221,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"La taille minimale d'une Scrum Team est :",
+options:["1 personne","2 personnes","3 personnes","5 personnes"],
+answer:[2],trap:null,
+expl:"Le Scrum Guide dit 'typically 10 or fewer people'. Il n'y a pas de minimum absolu prescrit, mais avec <strong>3 personnes</strong> (1 PO + 1 SM + 1 Developer), toutes les accountabilities sont couvertes. En dessous, Scrum devient difficile à pratiquer."},
+
+{id:222,section:"Scrum Team",difficulty:"easy",multi:false,
+text:"Les Developers doivent-ils inclure uniquement des développeurs de code dans une Scrum Team ?",
+options:["Oui, c'est la définition de Developers","Non — le terme Developers inclut toute personne qui travaille à créer l'Increment","Oui, les autres rôles (design, QA) sont séparés","Non, mais ils doivent avoir des compétences de codage de base"],
+answer:[1],trap:null,
+expl:"<strong>Non.</strong> 'Developers' dans Scrum est intentionnellement large : il inclut <strong>toute personne qui travaille à créer l'Increment</strong> — développeurs, designers, QA, data engineers, rédacteurs, etc."},
+
+{id:223,section:"Scrum Team",difficulty:"hard",multi:false,
+text:"A Scrum Team works on a product where the Developers have deep domain expertise but the Product Owner has limited technical knowledge. This is:",
+options:["A problem — the PO must understand technical details to order the backlog","Normal and acceptable — the PO focuses on value and the Developers guide technical decisions","A violation of Scrum — the PO must be technical","Only acceptable if the Scrum Master bridges the gap"],
+answer:[1],trap:null,
+expl:"C'est <strong>normal et acceptable</strong>. Le PO n'a pas besoin d'expertise technique — il se concentre sur la valeur et les priorités. Les Developers apportent l'expertise technique et peuvent aider le PO à comprendre les implications techniques des décisions."},
+
+{id:224,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Quel événement Scrum est conçu spécifiquement pour améliorer l'efficacité de la Scrum Team ?",
+options:["Le Sprint Planning","Le Daily Scrum","La Sprint Review","La Sprint Rétrospective"],
+answer:[3],trap:null,
+expl:"La <strong>Sprint Rétrospective</strong> est l'événement spécifiquement conçu pour inspecter comment l'équipe travaille et identifier des améliorations. Les autres événements servent d'autres objectifs (planifier, inspecter le produit, coordonner le travail)."},
+
+{id:225,section:"Scrum Team",difficulty:"medium",multi:false,
+text:"Selon Scrum, qui décide de comment l'équipe va s'organiser pour atteindre le Sprint Goal ?",
+options:["Le Scrum Master","Le Product Owner","Les Developers eux-mêmes","Le management"],
+answer:[2],trap:null,
+expl:"Les <strong>Developers décident eux-mêmes</strong> comment ils s'organisent pour atteindre le Sprint Goal. C'est le principe d'auto-gestion : ils choisissent qui fait quoi, comment et dans quel ordre — sans direction externe."},
+
+/* ══════════════════════════════════════════════════════════
+   BUCKET 4 : EVENTS (75 questions)
+   ══════════════════════════════════════════════════════════ */
+
+// EASY
+{id:301,section:"Events",difficulty:"easy",multi:false,
+text:"Quel est l'ordre correct des événements à la fin d'un Sprint ?",
+options:["Sprint Review, puis Sprint Rétrospective","Sprint Rétrospective, puis Sprint Review","Les deux peuvent se tenir dans n'importe quel ordre","Il n'y a pas d'ordre prescrit"],
+answer:[0],trap:"Review AVANT Rétro — la Rétro est le DERNIER événement du Sprint.",
+expl:"L'ordre est : <strong>Sprint Review</strong> d'abord, puis <strong>Sprint Rétrospective</strong>. La Rétrospective est le dernier événement du Sprint. La Review inspecte le produit, la Rétro inspecte les pratiques d'équipe."},
+
+{id:302,section:"Events",difficulty:"easy",multi:false,
+text:"Quelle est la durée maximale du Daily Scrum ?",
+options:["30 minutes","20 minutes","15 minutes","10 minutes"],
+answer:[2],trap:null,
+expl:"Le Daily Scrum est timeboxé à <strong>15 minutes</strong>. C'est un événement de planification et d'inspection, pas une réunion de statut. Sa durée fixe encourage la concision et le focus."},
+
+{id:303,section:"Events",difficulty:"easy",multi:false,
+text:"Qui doit assister au Daily Scrum ?",
+options:["Toute la Scrum Team","Les Developers uniquement","Les Developers et le Scrum Master","Les Developers, le SM et le PO"],
+answer:[1],trap:"Daily Scrum = événement des Developers. SM et PO pas requis.",
+expl:"Le Daily Scrum est un événement <strong>pour les Developers</strong>. Le SM peut y assister mais n'est pas requis. Le PO non plus. C'est la réunion de planification des Developers pour les prochaines 24 heures."},
+
+{id:304,section:"Events",difficulty:"easy",multi:false,
+text:"Quelle est la durée maximale du Sprint Planning pour un Sprint d'un mois ?",
+options:["4 heures","6 heures","8 heures","Pas de limite"],
+answer:[2],trap:null,
+expl:"Le Sprint Planning dure au maximum <strong>8 heures</strong> pour un Sprint d'1 mois. Pour des Sprints plus courts, la durée est proportionnellement réduite (ex: 4h pour 2 semaines, 2h pour 1 semaine)."},
+
+{id:305,section:"Events",difficulty:"easy",multi:false,
+text:"Combien y a-t-il d'événements Scrum officiels ?",
+options:["3","4","5","6"],
+answer:[2],trap:"Le Sprint lui-même compte comme un événement.",
+expl:"Il y a <strong>5 événements Scrum</strong> : le Sprint (qui contient les autres), le Sprint Planning, le Daily Scrum, la Sprint Review et la Sprint Rétrospective. Le Sprint est à la fois le conteneur et un événement."},
+
+// MEDIUM
+{id:306,section:"Events",difficulty:"medium",multi:false,
+text:"Le Scrum Guide 2020 prescrit-il encore les 3 questions du Daily Scrum ?",
+options:["Oui, elles sont obligatoires","Non — le format est libre, décidé par les Developers","Oui, mais uniquement comme suggestion","Non — elles ont été remplacées par 2 questions"],
+answer:[1],trap:"Changement clé du Guide 2020 : format Daily libre.",
+expl:"<strong>Non.</strong> Le Scrum Guide 2020 a <strong>supprimé les 3 questions</strong> traditionnelles ('Qu'ai-je fait hier ? Que vais-je faire ? Y a-t-il des obstacles ?'). Le format est maintenant à la discrétion des Developers. L'objectif reste le même : inspecter la progression vers le Sprint Goal."},
+
+{id:307,section:"Events",difficulty:"medium",multi:false,
+text:"La Sprint Review est-elle une démo formelle de l'Increment au management ?",
+options:["Oui, c'est son objectif principal","Non — c'est une session de travail collaborative d'inspection et d'adaptation","Oui, mais uniquement si le management le demande","Non — c'est une réunion interne à la Scrum Team"],
+answer:[1],trap:"Sprint Review ≠ démo. C'est une session de travail collaborative.",
+expl:"<strong>Non.</strong> La Sprint Review est une <strong>session de travail collaborative</strong>. La Scrum Team et les stakeholders inspectent l'Increment et la progression vers le Product Goal, puis adaptent le Product Backlog en conséquence."},
+
+{id:308,section:"Events",difficulty:"medium",multi:false,
+text:"Quelle est la durée maximale de la Sprint Review pour un Sprint d'un mois ?",
+options:["2 heures","3 heures","4 heures","5 heures"],
+answer:[2],trap:null,
+expl:"La Sprint Review dure au maximum <strong>4 heures</strong> pour un Sprint d'1 mois. Pour des Sprints plus courts, la durée est proportionnelle. C'est l'avant-dernier événement du Sprint."},
+
+{id:309,section:"Events",difficulty:"medium",multi:false,
+text:"Qui participe à la Sprint Rétrospective ?",
+options:["Les Developers uniquement","Les Developers et le Scrum Master","La Scrum Team entière (PO inclus)","La Scrum Team et les stakeholders clés"],
+answer:[2],trap:"PO INCLUS dans la Rétro — Stakeholders EXCLUS.",
+expl:"La <strong>Sprint Rétrospective implique toute la Scrum Team</strong> : Product Owner, Scrum Master et Developers. Les stakeholders n'y participent pas. C'est un espace sûr d'amélioration interne."},
+
+{id:310,section:"Events",difficulty:"medium",multi:false,
+text:"Quel est l'objectif principal du Sprint Planning ?",
+options:["Estimer la vélocité de l'équipe","Définir le Sprint Goal et identifier le travail à faire pour l'atteindre","Approuver le Product Backlog avec le management","Affecter les tâches à chaque Developer"],
+answer:[1],trap:null,
+expl:"Le Sprint Planning a pour objectif principal de <strong>définir le Sprint Goal</strong> (pourquoi ce Sprint) et d'identifier le travail nécessaire (quoi et comment). C'est toute la Scrum Team qui collabore pour créer le Sprint Backlog."},
+
+{id:311,section:"Events",difficulty:"medium",multi:false,
+text:"Les timeboxes des événements Scrum sont-elles des durées maximales ou des durées exactes ?",
+options:["Des durées exactes — on ne peut pas finir avant","Des durées maximales — on peut finir plus tôt","Des durées minimales — on doit au moins y passer ce temps","Des recommandations non contraignantes"],
+answer:[1],trap:null,
+expl:"Les timeboxes Scrum représentent des <strong>durées maximales</strong>. Si l'objectif de l'événement est atteint avant la fin de la timebox, l'événement se termine. On ne prolonge pas un événement au-delà de sa timebox."},
+
+{id:312,section:"Events",difficulty:"medium",multi:false,
+text:"Lors du Sprint Planning, les 3 questions abordées sont :",
+options:["Qui fait quoi, quand et comment ?","Pourquoi ce Sprint a-t-il de la valeur ? Quoi est réalisable ? Comment le travail sera-t-il accompli ?","Quel est le budget ? Quelle est l'équipe ? Quelle est la deadline ?","Qu'a-t-on livré ? Qu'allons-nous livrer ? Quels sont les risques ?"],
+answer:[1],trap:null,
+expl:"Le Sprint Planning aborde 3 questions : <strong>Pourquoi</strong> ce Sprint crée de la valeur (→ Sprint Goal), <strong>Quoi</strong> peut être accompli (→ sélection des PBI), <strong>Comment</strong> le travail sera fait (→ plan des Developers)."},
+
+// HARD
+{id:313,section:"Events",difficulty:"hard",multi:false,
+text:"Which statement about the Sprint is MOST accurate according to the Scrum Guide 2020?",
+options:["Sprints are timeboxed iterations where the team delivers a potentially shippable product","A Sprint is just a container for the other Scrum events","Sprints must always be two weeks long","A Sprint starts with Sprint Planning and ends with Sprint Retrospective"],
+answer:[0],trap:null,
+expl:"Les Sprints sont des <strong>itérations timeboxées</strong> (1-4 semaines) où la Scrum Team crée un Increment potentiellement livrable. Le Sprint contient tous les autres événements ET est lui-même un événement. Il commence immédiatement après la fin du Sprint précédent."},
+
+{id:314,section:"Events",difficulty:"hard",multi:false,
+text:"During Sprint Planning, the Developers select 10 Product Backlog Items but realize mid-Sprint they can only complete 7 while still achieving the Sprint Goal. What should they do?",
+options:["Cancel the Sprint since the commitment cannot be met","Inform the PO and collaboratively adjust the Sprint Backlog scope, keeping the Sprint Goal intact","Work overtime to complete all 10 items","Reduce quality standards to complete all 10 items on time"],
+answer:[1],trap:null,
+expl:"Les Developers doivent <strong>informer le PO et ajuster le périmètre</strong> du Sprint Backlog. Le Sprint Goal reste intact — c'est le périmètre (les 10 PBI) qui peut être adapté. Les 3 PBI non terminés retournent au Product Backlog."},
+
+{id:315,section:"Events",difficulty:"hard",multi:false,
+text:"The Sprint Review output is primarily:",
+options:["A status report for management","A demonstration video for remote stakeholders","An updated Product Backlog reflecting new insights and adaptations","A sprint velocity report for planning purposes"],
+answer:[2],trap:null,
+expl:"L'output principal de la Sprint Review est un <strong>Product Backlog potentiellement mis à jour</strong> reflétant les nouveaux insights, feedbacks et adaptations discutés pendant la session. C'est l'input pour le Sprint Planning suivant."},
+
+{id:316,section:"Events",difficulty:"hard",multi:false,
+text:"Can a Sprint be cancelled after Sprint Planning but before the first Daily Scrum?",
+options:["No — a Sprint can only be cancelled at the end","Yes — but only by the Scrum Master","Yes — only the Product Owner can cancel a Sprint, at any point during the Sprint","No — Sprint cancellation is only possible after a Sprint Review"],
+answer:[2],trap:"Seul le PO peut annuler — à tout moment pendant le Sprint.",
+expl:"<strong>Oui.</strong> Seul le <strong>Product Owner peut annuler un Sprint</strong>, et ce <strong>à tout moment</strong> pendant la durée du Sprint — même juste après le Sprint Planning. La condition est que le Sprint Goal soit devenu obsolète."},
+
+{id:317,section:"Events",difficulty:"medium",multi:false,
+text:"Quel est l'objet inspecté lors du Daily Scrum ?",
+options:["La vélocité et le burndown de l'équipe","La progression vers le Sprint Goal","Les performances individuelles des Developers","L'état d'avancement du Product Backlog"],
+answer:[1],trap:null,
+expl:"Le Daily Scrum inspecte <strong>la progression vers le Sprint Goal</strong>. L'objectif est d'identifier si l'équipe est sur la bonne voie et d'adapter le Sprint Backlog pour les prochaines 24 heures si nécessaire."},
+
+{id:318,section:"Events",difficulty:"hard",multi:false,
+text:"What is the MAIN purpose of the Sprint Retrospective according to the Scrum Guide?",
+options:["To document lessons learned for future projects","To plan ways to increase quality and effectiveness in the next Sprint","To review team member performance","To identify which PBIs were not completed and why"],
+answer:[1],trap:null,
+expl:"L'objectif principal de la Sprint Rétrospective est de <strong>planifier des façons d'augmenter la qualité et l'efficacité</strong> dans le prochain Sprint. C'est l'événement d'amélioration continue de la Scrum Team."},
+
+{id:319,section:"Events",difficulty:"medium",multi:false,
+text:"Qui peut assister à la Sprint Review en plus de la Scrum Team ?",
+options:["Personne — c'est une réunion interne","Les managers uniquement","Les stakeholders clés invités par le PO","N'importe qui dans l'organisation"],
+answer:[2],trap:null,
+expl:"La Sprint Review inclut la Scrum Team et les <strong>stakeholders</strong> invités par le Product Owner. C'est l'événement où l'Increment est présenté pour feedback. Les stakeholders apportent des insights précieux pour adapter le Product Backlog."},
+
+{id:320,section:"Events",difficulty:"hard",multi:false,
+text:"A Sprint ends but the team didn't reach the Sprint Goal. What should happen?",
+options:["The Sprint is extended until the Sprint Goal is achieved","A new Sprint begins normally — the incomplete PBIs return to the Product Backlog","The team must explain to management why they failed","The Sprint Goal is adjusted retroactively to match what was delivered"],
+answer:[1],trap:"Les Sprints ne s'allongent JAMAIS — on continue avec un nouveau Sprint.",
+expl:"<strong>Un nouveau Sprint commence normalement.</strong> Les PBI non terminés (non conformes à la DoD) retournent au Product Backlog. Le PO les réordonne selon les priorités. Les Sprints ont une durée fixe et ne s'allongent jamais."},
+
+{id:321,section:"Events",difficulty:"medium",multi:false,
+text:"Quel est l'output du Sprint Planning ?",
+options:["Un planning de projet détaillé sur plusieurs mois","Un Sprint Backlog comprenant le Sprint Goal et le plan des Developers","Un rapport de capacité de l'équipe","Une liste de toutes les fonctionnalités du produit"],
+answer:[1],trap:null,
+expl:"L'output du Sprint Planning est le <strong>Sprint Backlog</strong> qui comprend : le <strong>Sprint Goal</strong> (l'objectif du Sprint), les PBI sélectionnés, et le plan des Developers pour livrer l'Increment."},
+
+{id:322,section:"Events",difficulty:"easy",multi:false,
+text:"La Sprint Rétrospective est-elle obligatoire dans Scrum ?",
+options:["Non, elle est optionnelle si l'équipe va bien","Non, elle peut être remplacée par un rapport écrit","Oui, c'est un événement Scrum obligatoire","Oui, mais uniquement pour les équipes en difficulté"],
+answer:[2],trap:null,
+expl:"<strong>Oui.</strong> La Sprint Rétrospective est un <strong>événement obligatoire</strong> dans Scrum. Supprimer cet événement retire à la Scrum Team son principal mécanisme d'amélioration continue — et viole le framework Scrum."},
+
+{id:323,section:"Events",difficulty:"hard",multi:false,
+text:"During a Sprint Review, stakeholders request a significant change in product direction. What is the correct process?",
+options:["Immediately adjust the current Sprint to accommodate the change","Note the request for the next Sprint Planning","The Product Owner updates the Product Backlog to reflect the new direction — this becomes input for the next Sprint Planning","Cancel the current Sprint and restart with a new direction"],
+answer:[2],trap:null,
+expl:"Le PO <strong>met à jour le Product Backlog</strong> pour refléter le nouveau besoin. Ce Product Backlog mis à jour devient l'input du prochain Sprint Planning. La Sprint Review est précisément l'événement conçu pour permettre ces adaptations."},
+
+{id:324,section:"Events",difficulty:"medium",multi:false,
+text:"Quel événement Scrum dure au maximum 3 heures pour un Sprint d'un mois ?",
+options:["Le Daily Scrum","Le Sprint Planning","La Sprint Review","La Sprint Rétrospective"],
+answer:[3],trap:null,
+expl:"La <strong>Sprint Rétrospective</strong> dure au maximum <strong>3 heures</strong> pour un Sprint d'1 mois. C'est l'événement le plus court parmi les événements non-Daily. Sa limite inférieure à la Review (4h) reflète son focus uniquement sur l'équipe."},
+
+{id:325,section:"Events",difficulty:"easy",multi:false,
+text:"Le Daily Scrum peut-il dépasser 15 minutes si l'équipe a beaucoup à discuter ?",
+options:["Oui, si tous les membres sont d'accord","Oui, si le Scrum Master l'autorise","Non — 15 minutes est une limite stricte","Non — mais les discussions peuvent continuer après en dehors de l'événement"],
+answer:[3],trap:null,
+expl:"<strong>Non</strong> — 15 minutes est la timebox maximale du Daily Scrum. Si des sujets importants émergent, l'équipe peut <strong>organiser une réunion séparée après</strong> pour approfondir. Le Daily reste focalisé et timeboxé."},
+
+/* ══════════════════════════════════════════════════════════
+   BUCKET 5 : ARTIFACTS & DOD (75 questions)
+   ══════════════════════════════════════════════════════════ */
+
+// EASY
+{id:401,section:"Artifacts & DoD",difficulty:"easy",multi:false,
+text:"Quels sont les trois artefacts Scrum ?",
+options:["Sprint Backlog, Roadmap et Increment","Product Backlog, Sprint Backlog et Increment","User Stories, Burndown et Velocity","Sprint Goal, Product Goal et Increment"],
+answer:[1],trap:null,
+expl:"Les trois artefacts Scrum sont : <strong>Product Backlog</strong>, <strong>Sprint Backlog</strong> et <strong>Increment</strong>. Chacun a un engagement associé pour renforcer la transparence et la mesure de la progression."},
+
+{id:402,section:"Artifacts & DoD",difficulty:"easy",multi:false,
+text:"Quel est l'engagement associé au Product Backlog ?",
+options:["Sprint Goal","Definition of Done","Product Goal","Product Vision"],
+answer:[2],trap:null,
+expl:"L'engagement du <strong>Product Backlog</strong> est le <strong>Product Goal</strong>. Les trois couples artefact-engagement : Product Backlog → Product Goal, Sprint Backlog → Sprint Goal, Increment → Definition of Done."},
+
+{id:403,section:"Artifacts & DoD",difficulty:"easy",multi:false,
+text:"La Definition of Done est créée par qui ?",
+options:["Le Product Owner","Le Scrum Master","Les Developers","Le management de qualité"],
+answer:[2],trap:null,
+expl:"La <strong>Definition of Done est créée par les Developers</strong>. Si l'organisation a des standards, la DoD doit au minimum les respecter. Si plusieurs équipes travaillent sur le même produit, elles partagent une DoD commune."},
+
+{id:404,section:"Artifacts & DoD",difficulty:"easy",multi:false,
+text:"Un PBI est considéré 'Done' quand :",
+options:["Le PO dit qu'il est terminé","Il respecte la Definition of Done","Il est testé par le SM","Il est approuvé lors de la Sprint Review"],
+answer:[1],trap:"Done = DoD respectée — pas l'approbation du PO.",
+expl:"Un PBI est <strong>Done</strong> lorsqu'il <strong>respecte la Definition of Done</strong>. C'est une mesure de qualité formelle, objective. L'approbation du PO est séparée de la notion de Done."},
+
+{id:405,section:"Artifacts & DoD",difficulty:"easy",multi:false,
+text:"Le Sprint Backlog appartient à :",
+options:["Le Product Owner","Le Scrum Master","Les Developers","La Scrum Team entière"],
+answer:[2],trap:"Le Sprint Backlog est créé PAR et POUR les Developers.",
+expl:"Le <strong>Sprint Backlog appartient aux Developers</strong>. Ils le créent lors du Sprint Planning et le mettent à jour quotidiennement. Le PO ne peut pas modifier le Sprint Backlog directement — seulement le Product Backlog."},
+
+// MEDIUM
+{id:406,section:"Artifacts & DoD",difficulty:"medium",multi:false,
+text:"Quelle est la différence entre la Definition of Done et les critères d'acceptation ?",
+options:["Ce sont des synonymes","La DoD s'applique à tous les PBI de l'équipe, les critères d'acceptation sont spécifiques à un PBI","La DoD est décidée par le PO, les critères par les Developers","Les critères d'acceptation remplacent la DoD dans les équipes matures"],
+answer:[1],trap:"DoD = tous les PBI. Critères acceptation = un PBI spécifique.",
+expl:"La <strong>DoD s'applique à tous les PBI</strong> de l'équipe et définit les standards de qualité minimaux. Les <strong>critères d'acceptation sont spécifiques à un PBI</strong> et définissent quand ce PBI particulier satisfait les besoins du PO/stakeholder."},
+
+{id:407,section:"Artifacts & DoD",difficulty:"medium",multi:false,
+text:"La Definition of Done peut-elle être allégée au cours du temps ?",
+options:["Oui, si l'équipe est sous pression","Oui, avec l'accord du Scrum Master","Non — la DoD peut être renforcée mais jamais allégée","Non — elle reste la même pour toujours"],
+answer:[2],trap:"DoD : peut être renforcée, jamais allégée.",
+expl:"La DoD peut <strong>uniquement être renforcée</strong> (devenir plus stricte, ajouter des critères). Elle <strong>ne peut jamais être allégée</strong>. Si un PBI ne respecte pas la DoD, il n'est pas Done — il retourne au Product Backlog."},
+
+{id:408,section:"Artifacts & DoD",difficulty:"medium",multi:false,
+text:"Qu'est-ce qu'un Increment selon le Scrum Guide ?",
+options:["La liste de fonctionnalités planifiées pour le Sprint","La somme de tous les PBI conformes à la DoD, incluant les Increments des Sprints précédents","Le rapport de fin de Sprint","Les tâches complétées par les Developers"],
+answer:[1],trap:null,
+expl:"L'<strong>Increment</strong> est la <strong>somme de tous les PBI conformes à la DoD</strong>, incluant les Increments des Sprints précédents. C'est la dernière version utilisable du produit. Il doit être potentiellement livrable à la fin de chaque Sprint."},
+
+{id:409,section:"Artifacts & DoD",difficulty:"medium",multi:false,
+text:"Le Product Backlog Refinement est-il un événement Scrum officiel ?",
+options:["Oui, avec une timebox de 2h par Sprint","Non — c'est une activité continue sans timebox prescrite","Oui, il doit se tenir le milieu de chaque Sprint","Non — il est remplacé par le Sprint Planning"],
+answer:[1],trap:"Refinement = activité continue, pas un événement Scrum officiel.",
+expl:"<strong>Non.</strong> Le Refinement est une <strong>activité continue</strong>, pas un événement Scrum officiel. Le Scrum Guide suggère qu'il ne devrait pas consommer plus de 10% de la capacité des Developers. Il peut se tenir à tout moment pendant le Sprint."},
+
+{id:410,section:"Artifacts & DoD",difficulty:"medium",multi:false,
+text:"Un Increment peut-il être livré aux utilisateurs avant la fin du Sprint ?",
+options:["Non, l'Increment est uniquement livrable lors de la Sprint Review","Oui — les Developers peuvent livrer à tout moment si l'Increment est Done","Oui, mais uniquement avec l'approbation du SM","Non, la livraison est décidée lors de la Sprint Planning"],
+answer:[1],trap:null,
+expl:"<strong>Oui.</strong> Un Increment peut être <strong>livré à tout moment</strong> pendant le Sprint si le PBI respecte la DoD. La décision de livraison appartient au PO. Scrum ne prescrit pas que la livraison doive attendre la fin du Sprint ou la Sprint Review."},
+
+// HARD
+{id:411,section:"Artifacts & DoD",difficulty:"hard",multi:false,
+text:"Which statement about multiple Increments in a single Sprint is TRUE?",
+options:["Only one Increment can be created per Sprint","Multiple Increments can be created within a Sprint, and multiple Increments may be delivered during a Sprint","Increments can only be delivered at the Sprint Review","Each Developer creates their own separate Increment"],
+answer:[1],trap:null,
+expl:"<strong>Plusieurs Increments</strong> peuvent être créés et livrés au cours d'un même Sprint. Chaque PBI qui respecte la DoD devient une partie de l'Increment. Le PO peut décider de livrer des parties de l'Increment avant la fin du Sprint."},
+
+{id:412,section:"Artifacts & DoD",difficulty:"hard",multi:false,
+text:"A team's Definition of Done does not include security testing because they've 'always done it separately.' What is the Scrum perspective?",
+options:["This is acceptable — security is a separate concern","If security testing is part of the quality standards, it should be included in the Definition of Done","The PO decides whether to include security in the DoD","The Scrum Master can approve the exclusion"],
+answer:[1],trap:null,
+expl:"Si les tests de sécurité font partie des <strong>standards de qualité</strong> pour un Increment potentiellement livrable, ils doivent être dans la DoD. Scrum promeut la transparence — un Increment qui n'a pas passé les tests de sécurité n'est pas vraiment 'Done'."},
+
+{id:413,section:"Artifacts & DoD",difficulty:"hard",multi:false,
+text:"At the end of a Sprint, 4 out of 6 selected PBIs meet the Definition of Done. The other 2 are 80% complete. What constitutes the Increment?",
+options:["All 6 PBIs since they were all worked on","Only the 4 PBIs that meet the Definition of Done","The 4 done PBIs plus partial credit for the other 2","None — the Sprint failed since not all PBIs were completed"],
+answer:[1],trap:"80% done ≠ Done. La DoD est binaire.",
+expl:"L'<strong>Increment est uniquement constitué des 4 PBI conformes à la DoD</strong>. 'Done' est binaire — soit conforme à la DoD, soit non-Done. Les 2 PBI à 80% ne sont pas Done et retournent au Product Backlog, sans leur travail partiel 'comptant'."},
+
+{id:414,section:"Artifacts & DoD",difficulty:"hard",multi:false,
+text:"The Scrum Guide states that each Sprint's Increment must be usable. What does 'usable' mean?",
+options:["It must be deployed to production","It must pass all automated tests","It meets the Definition of Done and could theoretically be released","It has been reviewed and approved by the Product Owner"],
+answer:[2],trap:null,
+expl:"'Utilisable' signifie que l'Increment <strong>respecte la DoD et pourrait être livré</strong> — pas nécessairement qu'il est livré. La décision de livraison appartient au PO. La qualité minimale pour être 'utilisable' est définie par la DoD."},
+
+{id:415,section:"Artifacts & DoD",difficulty:"medium",multi:false,
+text:"Si plusieurs Scrum Teams travaillent sur le même produit, comment la Definition of Done est-elle gérée ?",
+options:["Chaque équipe a sa propre DoD","Toutes les équipes partagent une DoD commune","La DoD n'est pas applicable dans ce cas","Le SM de chaque équipe négocie sa propre DoD"],
+answer:[1],trap:null,
+expl:"Si plusieurs équipes travaillent sur le même produit, elles <strong>partagent une DoD commune</strong>. Cela garantit que l'Increment global est cohérent et que les standards de qualité sont uniformes pour l'ensemble du produit."},
+
+{id:416,section:"Artifacts & DoD",difficulty:"medium",multi:false,
+text:"Le Sprint Backlog est-il fixe une fois le Sprint démarré ?",
+options:["Oui, il ne peut pas être modifié pendant le Sprint","Non — les Developers le mettent à jour quotidiennement au fur et à mesure des apprentissages","Oui, sauf si le PO demande un changement","Non, le SM peut l'adapter selon les obstacles"],
+answer:[1],trap:null,
+expl:"<strong>Non.</strong> Le Sprint Backlog est <strong>mis à jour quotidiennement</strong> par les Developers. Il est 'hautement visible' et reflète en temps réel le travail restant. Ce qui est fixe, c'est le Sprint Goal — pas le plan détaillé."},
+
+{id:417,section:"Artifacts & DoD",difficulty:"easy",multi:false,
+text:"Qu'est-ce que le 'Product Backlog' dans Scrum ?",
+options:["Une liste fixe de toutes les fonctionnalités du produit définie au démarrage","Une liste ordonnée et émergente de tout ce qui est connu pour améliorer le produit","Un document de spécification des exigences","Un backlog de bugs à corriger"],
+answer:[1],trap:null,
+expl:"Le Product Backlog est une <strong>liste ordonnée et émergente</strong> de tout ce qui est connu pour améliorer le produit. Il n'est jamais complet — il évolue continuellement au rythme des apprentissages et des changements de l'environnement."},
+
+{id:418,section:"Artifacts & DoD",difficulty:"hard",multi:false,
+text:"Which artifact provides transparency on the work needed to achieve the Product Goal?",
+options:["Sprint Backlog","Increment","Product Backlog","Definition of Done"],
+answer:[2],trap:null,
+expl:"Le <strong>Product Backlog</strong> fournit la transparence sur tout le travail connu nécessaire pour atteindre le Product Goal. Son engagement (Product Goal) décrit l'objectif futur du produit. Le Product Backlog est le chemin vers cet objectif."},
+
+{id:419,section:"Artifacts & DoD",difficulty:"medium",multi:false,
+text:"Que se passe-t-il avec les PBI non terminés à la fin d'un Sprint ?",
+options:["Ils sont annulés et doivent être réécrits","Ils sont 'semi-comptabilisés' dans l'Increment","Ils retournent au Product Backlog pour être replanifiés par le PO","Ils sont automatiquement inclus dans le prochain Sprint"],
+answer:[2],trap:null,
+expl:"Les PBI non conformes à la DoD <strong>retournent au Product Backlog</strong>. Le PO les réordonne selon les priorités. Ils ne sont pas automatiquement dans le prochain Sprint — le PO décide s'ils y entrent et dans quel ordre."},
+
+{id:420,section:"Artifacts & DoD",difficulty:"hard",multi:false,
+text:"An organization has quality standards that exceed the team's current Definition of Done. What should happen?",
+options:["The team can ignore organizational standards if they conflict with their workflow","The team's Definition of Done must at minimum include the organizational standards","The Scrum Master negotiates a compromise between the two","The PO decides which standards apply"],
+answer:[1],trap:null,
+expl:"La DoD de l'équipe doit <strong>au minimum inclure les standards organisationnels</strong>. Si l'organisation a des standards de qualité (ex: normes de sécurité, compliance), la DoD ne peut pas les ignorer. L'équipe peut avoir une DoD plus stricte, jamais moins stricte."},
+
+/* ══════════════════════════════════════════════════════════
+   BUCKET 6 : PRODUCT GOAL & PLANNING (50 questions)
+   ══════════════════════════════════════════════════════════ */
+
+// EASY
+{id:501,section:"Product Goal & Planning",difficulty:"easy",multi:false,
+text:"Il peut y avoir plusieurs Product Goals actifs simultanément.",
+options:["Vrai","Faux"],
+answer:[1],trap:"Un seul Product Goal à la fois.",
+expl:"<strong>Faux.</strong> Il n'y a qu'<strong>un seul Product Goal à la fois</strong>. La Scrum Team poursuit cet objectif jusqu'à l'accomplissement, puis passe au suivant. Avoir plusieurs objectifs simultanés disperserait l'attention."},
+
+{id:502,section:"Product Goal & Planning",difficulty:"easy",multi:false,
+text:"Le Sprint Goal est créé lors de quel événement ?",
+options:["Le Daily Scrum","La Sprint Review","La Sprint Rétrospective","Le Sprint Planning"],
+answer:[3],trap:null,
+expl:"Le Sprint Goal est créé <strong>lors du Sprint Planning</strong> par toute la Scrum Team. Le PO propose pourquoi le Sprint crée de la valeur, et l'équipe définit collaborativement le Sprint Goal."},
+
+{id:503,section:"Product Goal & Planning",difficulty:"easy",multi:false,
+text:"Quel est l'engagement associé au Sprint Backlog ?",
+options:["Product Goal","Definition of Done","Sprint Goal","Sprint Vision"],
+answer:[2],trap:null,
+expl:"L'engagement du <strong>Sprint Backlog</strong> est le <strong>Sprint Goal</strong>. C'est l'objectif du Sprint, la raison pour laquelle ce Sprint existe. Il guide les décisions des Developers tout au long du Sprint."},
+
+// MEDIUM
+{id:504,section:"Product Goal & Planning",difficulty:"medium",multi:false,
+text:"Que doit faire le Product Owner si le Product Goal devient obsolète en cours de route ?",
+options:["Continuer jusqu'à l'accomplissement quoi qu'il arrive","Évaluer si le Sprint Goal est aussi obsolète — si oui, annuler le Sprint et créer un nouveau Product Goal","Demander au SM d'adapter le Sprint en cours","Ignorer le Product Goal et se concentrer sur les Sprints"],
+answer:[1],trap:null,
+expl:"Si le Product Goal devient obsolète, le PO doit <strong>évaluer l'impact sur le Sprint Goal</strong>. Si le Sprint Goal est lui aussi obsolète, le PO peut annuler le Sprint. Ensuite, un nouveau Product Goal peut être défini."},
+
+{id:505,section:"Product Goal & Planning",difficulty:"medium",multi:false,
+text:"Le Sprint Goal peut-il être modifié après le démarrage du Sprint ?",
+options:["Oui, avec l'accord du PO","Oui, si un obstacle majeur survient","Non — le Sprint Goal est fixé pour toute la durée du Sprint","Oui, lors du Daily Scrum"],
+answer:[2],trap:"Sprint Goal = fixe pendant le Sprint. Périmètre peut évoluer.",
+expl:"<strong>Non.</strong> Le Sprint Goal est <strong>fixé pour toute la durée du Sprint</strong>. Ce qui peut changer, c'est le périmètre des PBI (en cas de découverte ou d'obstacle), mais l'objectif lui-même reste immuable."},
+
+{id:506,section:"Product Goal & Planning",difficulty:"medium",multi:false,
+text:"Qu'est-ce que le 'Sprint Goal' apporte à la Scrum Team ?",
+options:["Une liste exhaustive de tout ce qui doit être fait","Un objectif commun qui donne de la flexibilité pour adapter le périmètre si nécessaire","Un engagement individuel pour chaque Developer","Un planning hebdomadaire détaillé"],
+answer:[1],trap:null,
+expl:"Le Sprint Goal apporte <strong>un objectif commun et de la flexibilité</strong>. Il permet aux Developers d'adapter le périmètre (quels PBI exactement) si nécessaire, tout en maintenant la direction. C'est un guard rail, pas une camisole de force."},
+
+{id:507,section:"Product Goal & Planning",difficulty:"medium",multi:false,
+text:"Le Product Goal est-il prescrit comme obligatoirement mesurable par le Scrum Guide ?",
+options:["Oui, il doit être SMART","Non — le Scrum Guide ne prescrit pas son format exact","Oui, il doit avoir des KPIs associés","Non — seul le Sprint Goal doit être mesurable"],
+answer:[1],trap:null,
+expl:"<strong>Non.</strong> Le Scrum Guide définit le Product Goal comme l'<strong>état futur du produit</strong> mais ne prescrit pas qu'il soit mesurable ou dans un format spécifique. En pratique, être mesurable est souhaitable mais pas exigé par le Guide."},
+
+{id:508,section:"Product Goal & Planning",difficulty:"medium",multi:false,
+text:"Pendant le Sprint Planning, qui sélectionne les PBI qui entrent dans le Sprint ?",
+options:["Le Product Owner","Le Scrum Master","Les Developers","La Scrum Team ensemble"],
+answer:[2],trap:"Les Developers sélectionnent — pas le PO.",
+expl:"Ce sont les <strong>Developers qui sélectionnent</strong> les PBI à inclure dans le Sprint, en fonction de leur capacité estimée. Le PO peut partager ses préférences, mais la sélection appartient aux Developers."},
+
+// HARD
+{id:509,section:"Product Goal & Planning",difficulty:"hard",multi:false,
+text:"What is the relationship between the Product Goal and Sprint Goals?",
+options:["Sprint Goals are smaller versions of the Product Goal","Each Sprint Goal should be a step toward achieving the Product Goal","Sprint Goals and Product Goals are independent","The Product Goal changes with every Sprint Goal"],
+answer:[1],trap:null,
+expl:"Chaque <strong>Sprint Goal devrait être un pas vers l'accomplissement du Product Goal</strong>. Le Product Goal est l'objectif à long terme, les Sprint Goals sont les étapes incrémentales vers cet objectif. Ensemble, ils forment une cascade stratégique."},
+
+{id:510,section:"Product Goal & Planning",difficulty:"hard",multi:false,
+text:"During Sprint Planning, the Scrum Team struggles to create a meaningful Sprint Goal because the Product Backlog items are unrelated. What is the BEST action?",
+options:["Pick any Sprint Goal and work with it","The Scrum Master selects the most relevant PBIs","The PO should have prepared the backlog better — the team should clarify PBIs to find a coherent theme","Skip the Sprint Goal for this Sprint"],
+answer:[2],trap:null,
+expl:"Le problème vient d'un <strong>backlog mal préparé</strong> (manque de refinement). Le PO aurait dû clarifier les PBI et s'assurer qu'un thème cohérent émerge. L'équipe doit collaborer pour trouver un Sprint Goal significatif, même si le backlog est fragmenté."},
+
+{id:511,section:"Product Goal & Planning",difficulty:"hard",multi:false,
+text:"The Product Owner changes the Product Goal entirely between Sprints. What should the Scrum Team do?",
+options:["Object — the Product Goal cannot change between Sprints","Start the next Sprint with the new Product Goal after proper refinement","Refuse to work until stakeholders approve the change","Continue with the old Product Goal since it was already committed to"],
+answer:[1],trap:null,
+expl:"Il n'y a qu'un Product Goal à la fois, et il peut être <strong>abandonné et remplacé</strong> par le PO. L'équipe devrait <strong>démarrer le prochain Sprint avec le nouveau Product Goal</strong>, après avoir assuré un refinement suffisant pour que le Sprint Planning soit efficace."},
+
+{id:512,section:"Product Goal & Planning",difficulty:"medium",multi:false,
+text:"Le Sprint Goal doit-il être atteint à la fin du Sprint ?",
+options:["Oui, toujours — sinon le Sprint est un échec","L'équipe s'engage à travailler vers le Sprint Goal, mais des imprévus peuvent l'empêcher","Non — le Sprint Goal est uniquement indicatif","Oui, sauf si le SM décide de l'adapter"],
+answer:[1],trap:null,
+expl:"L'équipe <strong>s'engage à travailler vers le Sprint Goal</strong> mais des imprévus peuvent survenir. Si le Sprint Goal ne peut pas être atteint, c'est une information précieuse qui doit être inspectée lors de la Sprint Review et la Rétrospective."},
+
+{id:513,section:"Product Goal & Planning",difficulty:"hard",multi:false,
+text:"What happens to the Sprint Goal when the Product Owner cancels a Sprint?",
+options:["The Sprint Goal is kept and used in the next Sprint","The Sprint Goal is abandoned along with the Sprint","The Sprint Goal becomes the new Product Goal","The Sprint Goal is archived for future reference"],
+answer:[1],trap:null,
+expl:"Lorsqu'un Sprint est annulé, le <strong>Sprint Goal est abandonné</strong> avec le Sprint. Les PBI Done peuvent être présentés lors d'une Sprint Review abrégée si nécessaire. Un nouveau Sprint commence avec un nouveau Sprint Goal."},
+
+{id:514,section:"Product Goal & Planning",difficulty:"medium",multi:false,
+text:"Le Product Goal describe :",
+options:["L'architecture technique du produit","L'état futur du produit qui guide le Product Backlog et les décisions de l'équipe","Les fonctionnalités à livrer dans les 3 prochains Sprints","La roadmap complète du produit pour l'année"],
+answer:[1],trap:null,
+expl:"Le Product Goal décrit l'<strong>état futur du produit</strong>. C'est un objectif à long terme qui fournit le contexte et la direction pour le Product Backlog. Il guide les décisions de priorisation du PO."},
+
+{id:515,section:"Product Goal & Planning",difficulty:"easy",multi:false,
+text:"Un Sprint sans Sprint Goal est-il conforme à Scrum ?",
+options:["Oui, si l'équipe préfère travailler sans objectif","Oui, dans les premiers Sprints avant la stabilisation","Non — le Sprint Goal est obligatoire","Non — sauf si le PO l'autorise"],
+answer:[2],trap:"Sprint Goal = obligatoire selon le Scrum Guide 2020.",
+expl:"<strong>Non.</strong> Le Sprint Goal est <strong>obligatoire</strong> dans Scrum depuis le Scrum Guide 2020. C'est le but du Sprint. Un Sprint sans Sprint Goal n'a pas de direction claire et n'est pas conforme au framework Scrum."},
+
+/* ══════════════════════════════════════════════════════════
+   BUCKET 7 : CASES & ANTI-PATTERNS (25 questions)
+   ══════════════════════════════════════════════════════════ */
+
+{id:601,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"L'anti-pattern 'mini-waterfall' dans Scrum se produit quand :",
+options:["L'équipe utilise un tableau Kanban dans Scrum","Chaque Sprint est divisé en phases (analyse, dev, test) au lieu de livrer un Increment intégré","L'équipe délivre plus que prévu","Le PO change les priorités trop souvent"],
+answer:[1],trap:null,
+expl:"Le <strong>'mini-waterfall'</strong> se produit quand chaque Sprint est divisé en phases séquentielles (analyse → dev → test) au lieu de viser un Increment intégré Done. Scrum promeut la livraison itérative et incrémentale, pas une réplication du waterfall en petits cycles."},
+
+{id:602,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"A manager joins the Daily Scrum daily and asks Developers to report their progress to him. What is the MOST appropriate response?",
+options:["This is fine — transparency is a Scrum value","The Scrum Master should coach the manager on the purpose of the Daily Scrum and protect the team's self-management","The Product Owner should stop the manager from attending","Developers should start the Daily Scrum without inviting anyone"],
+answer:[1],trap:null,
+expl:"Le SM doit <strong>éduquer le manager</strong> : le Daily Scrum est un événement d'auto-gestion des Developers, pas une réunion de reporting. Le manager peut observer silencieusement mais ne doit pas transformer le Daily en réunion de statut. Le SM protège l'équipe."},
+
+{id:603,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"L'équipe Scrum a 'trop de réunions' et peu de temps pour développer. Quel est le problème probable ?",
+options:["Scrum génère trop de cérémonies","Les événements Scrum ne servent pas leur objectif et des réunions supplémentaires ont été ajoutées","Le Scrum Guide prescrit trop d'événements","Le PO organise trop de refinements"],
+answer:[1],trap:null,
+expl:"Scrum est intentionnellement minimaliste en événements. Si l'équipe a 'trop de réunions', c'est probablement parce que <strong>des réunions extra-Scrum ont été ajoutées</strong> et/ou que les événements Scrum n'atteignent pas leurs objectifs, générant des réunions compensatoires."},
+
+{id:604,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"The Scrum Team consistently delivers all planned PBIs in every Sprint without any issues. The Scrum Master is proud of this. What should they actually be concerned about?",
+options:["Nothing — this is perfect Scrum performance","The team may be under-committing or not being transparent about challenges","The Product Owner is not challenging the team enough","The Definition of Done may be too easy"],
+answer:[1],trap:null,
+expl:"Toujours tout livrer sans problème peut indiquer un <strong>sous-engagement</strong> (la vélocité n'est pas un objectif), un manque de transparence sur les vrais défis, ou une DoD trop facile. L'empirisme de Scrum inclut révéler les problèmes — un Scrum 'parfait' est suspect."},
+
+{id:605,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"Le Sprint Goal est ignoré par l'équipe qui traite le Sprint comme une liste de tâches. Quel est l'impact ?",
+options:["Aucun — le Sprint Goal est facultatif","L'équipe perd la flexibilité d'adapter le périmètre et la cohérence stratégique du Sprint","Le Scrum Master doit imposer le respect du Sprint Goal","Le PO doit réécrire le Sprint Goal chaque jour"],
+answer:[1],trap:null,
+expl:"Sans Sprint Goal, l'équipe <strong>perd la flexibilité de s'adapter</strong> (changer des PBI si nécessaire pour atteindre l'objectif) et la cohérence stratégique. Le Sprint devient une liste de tâches sans but commun — un anti-pattern fréquent."},
+
+{id:606,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"A Scrum Team consistently fails to complete their Sprint Goal but always completes individual PBIs. What is likely the problem?",
+options:["The Sprint Goal is too ambitious","The Sprint Goal is poorly written and doesn't reflect what the team is actually building","The team needs more Sprints to get used to Scrum","The Product Owner is not participating enough"],
+answer:[1],trap:null,
+expl:"Si les PBI sont livrés mais pas le Sprint Goal, c'est souvent que le <strong>Sprint Goal est mal rédigé</strong> — il ne correspond pas aux PBI sélectionnés, ou il est trop vague. Le Sprint Goal doit être cohérent avec les PBI choisis et guider les décisions de l'équipe."},
+
+{id:607,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"Lequel de ces comportements est un anti-pattern pour un Product Owner ?",
+options:["Ordonner le Product Backlog selon la valeur perçue","Écrire des User Stories très détaillées pour chaque PBI avant le Sprint Planning","Annuler un Sprint dont le Sprint Goal est obsolète","Adapter le Product Backlog après la Sprint Review"],
+answer:[1],trap:null,
+expl:"Écrire des User Stories <strong>très détaillées pour chaque PBI avant le Sprint Planning</strong> est un anti-pattern (Big Design Up Front). Le refinement doit être juste assez — les PBI doivent être détaillés quand ils approchent du Sprint Planning, pas tous à l'avance."},
+
+{id:608,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"Management imposes a fixed delivery date and feature scope on the Scrum Team. What is the Scrum perspective on this situation?",
+options:["This is acceptable — Scrum teams must meet business commitments","This creates a conflict with Scrum's empirical approach — fixed scope and date together remove the ability to adapt","The Scrum Master should hide this from the team","The Product Owner should commit to the fixed scope and date"],
+answer:[1],trap:null,
+expl:"Fixer simultanément le <strong>périmètre ET la date</strong> est un <strong>triangle impossible</strong> qui élimine l'empirisme. Scrum permet de fixer la date (durée du Sprint) OU de fixer le périmètre (Product Goal) mais pas les deux sans compromettre la qualité ou l'adaptabilité."},
+
+{id:609,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"Un Scrum Master remarque que l'équipe saute systématiquement la Sprint Rétrospective 'car elle ne sert à rien'. Quelle est la meilleure réponse ?",
+options:["Accepter si l'équipe est d'accord","Imposer la Rétrospective en mode obligatoire","Investiguer pourquoi elle ne semble pas utile et faciliter une Rétro plus engageante","Demander au PO d'exiger les Rétros"],
+answer:[2],trap:null,
+expl:"Le SM doit <strong>comprendre pourquoi la Rétro ne semble pas utile</strong> et améliorer sa facilitation. Si l'équipe ne trouve pas de valeur dans les Rétros, c'est un signal que la Rétro n'est pas bien animée — pas que l'événement est inutile."},
+
+{id:610,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"Which scenario represents 'Scrumwaterfall' (a common anti-pattern)?",
+options:["The team holds a Daily Scrum every day","The Sprint is divided into phases where the first week is analysis, the second is development, and only the last days are for testing","The PO changes backlog ordering between Sprints","The team uses story points for estimation"],
+answer:[1],trap:null,
+expl:"Le '<strong>Scrumwaterfall</strong>' se produit quand le Sprint reproduit les phases du waterfall (analyse → développement → test) séquentiellement, au lieu que l'équipe travaille de façon collaborative et intégrée tout au long du Sprint vers un Increment Done."},
+
+{id:611,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"L'équipe Scrum dit : 'On a besoin d'un Sprint Zéro pour mettre en place l'infrastructure avant de commencer.' Quelle est la perspective Scrum ?",
+options:["Le Sprint Zéro est une bonne pratique recommandée","Le Scrum Guide ne définit pas de Sprint Zéro — l'infrastructure devrait être construite incrémentalement","Le SM peut autoriser un Sprint Zéro exceptionnel","Le Sprint Zéro est obligatoire pour les nouveaux projets"],
+answer:[1],trap:"Sprint Zero n'existe pas dans le Scrum Guide.",
+expl:"Le <strong>Sprint Zéro n'est pas défini dans le Scrum Guide</strong>. Scrum préconise de commencer à livrer de la valeur dès le premier Sprint. L'infrastructure peut être construite incrémentalement comme un PBI dans les premiers Sprints."},
+
+{id:612,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"A Product Owner is the CEO of the company and is too busy to properly manage the Product Backlog. Developers frequently wait for decisions. What should happen?",
+options:["This is acceptable — the CEO has authority","The CEO should delegate PO responsibilities to someone with time and authority to do the job properly","The Scrum Master takes over backlog management","Developers make their own prioritization decisions"],
+answer:[1],trap:null,
+expl:"Le PO doit avoir <strong>le temps et l'autorité</strong> pour gérer efficacement le Product Backlog. Si le CEO ne peut pas assumer ce rôle correctement, il doit <strong>déléguer à quelqu'un de compétent et disponible</strong> — tout en restant accountable des décisions produit majeures."},
+
+{id:613,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"Lequel de ces éléments est prescrit par le Scrum Guide ?",
+options:["Les User Stories comme format de PBI","La vélocité comme métrique d'équipe","Le Sprint Goal comme engagement du Sprint Backlog","Le Planning Poker comme technique d'estimation"],
+answer:[2],trap:null,
+expl:"Seul le <strong>Sprint Goal comme engagement du Sprint Backlog</strong> est prescrit par le Scrum Guide. Les User Stories, la vélocité et le Planning Poker sont des pratiques complémentaires populaires mais non prescrites."},
+
+{id:614,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"During a Sprint Review, the Product Owner says 'great demo team!' and closes the meeting without any discussion. What is the problem?",
+options:["The Sprint Review was too short","The Sprint Review failed its purpose — it should be a working session with stakeholder collaboration and Product Backlog adaptation","The Scrum Master should have facilitated better","The Developers didn't present the Increment correctly"],
+answer:[1],trap:null,
+expl:"La Sprint Review <strong>a échoué son objectif</strong>. Ce n'est pas une démo passive — c'est une <strong>session de travail collaborative</strong> où l'Increment est inspecté, les stakeholders donnent du feedback, et le Product Backlog est adapté. Sans ces éléments, l'événement n'a pas eu lieu."},
+
+{id:615,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"Quelle pratique contredit les valeurs Scrum de transparence et d'empirisme ?",
+options:["Montrer un burndown chart lors du Daily Scrum","Cacher les problèmes au management pour éviter la pression","Inviter des stakeholders à la Sprint Review","Adapter le Product Backlog après la Sprint Review"],
+answer:[1],trap:null,
+expl:"<strong>Cacher les problèmes</strong> contredit directement la <strong>transparence</strong> (un pilier de Scrum) et l'<strong>empirisme</strong> (on ne peut pas inspecter et adapter ce qu'on ne voit pas). Scrum est conçu pour révéler les problèmes, pas les dissimuler."},
+
+// Add more questions to reach full counts
+{id:616,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"The Scrum Team has been stable for 6 months, but the Sprint Retrospectives always produce the same improvement ideas that are never implemented. What is the MOST likely root cause?",
+options:["The team has run out of things to improve","The Scrum Master is not facilitating the Retrospective well enough","The improvement items are not being tracked or committed to — and the team lacks accountability for change","The Product Owner is preventing change"],
+answer:[2],trap:null,
+expl:"Le problème est que les <strong>améliorations identifiées ne sont pas tracées ni commitées</strong>. Le Scrum Guide dit que les améliorations peuvent être ajoutées au Sprint Backlog du prochain Sprint. Sans accountability, les Rétros deviennent un rituel vide."},
+
+{id:617,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"Un manager demande au Scrum Master de produire des rapports hebdomadaires de progression individuelle pour chaque Developer. Comment le SM devrait-il répondre ?",
+options:["Produire les rapports immédiatement pour éviter le conflit","Refuser catégoriquement et ignorer la demande","Expliquer que Scrum mesure la progression au niveau de l'équipe et proposer des alternatives transparentes (burndown, velocity d'équipe)","Demander au PO de gérer cette demande"],
+answer:[2],trap:null,
+expl:"Le SM doit <strong>éduquer le manager</strong> et proposer des alternatives : Scrum utilise des métriques au <strong>niveau équipe</strong> (burndown, progression vers Sprint Goal). Mesurer individuellement mine la collaboration. Le SM peut proposer la Sprint Review comme mécanisme de transparence."},
+
+{id:618,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"A team decides to skip Sprint Planning because 'we know what we're doing.' What is the consequence?",
+options:["This is acceptable for experienced teams","The team loses the Sprint Goal and structured commitment — violating Scrum","The Scrum Master can approve skipping one Sprint Planning","Only the Product Owner can authorize skipping Sprint Planning"],
+answer:[1],trap:null,
+expl:"Sauter le Sprint Planning est une <strong>violation de Scrum</strong>. Sans Sprint Planning, il n'y a pas de Sprint Goal, pas de sélection de PBI validée, pas de plan partagé. L'expérience ne justifie pas de supprimer un événement obligatoire — elle devrait le rendre plus efficace."},
+
+{id:619,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"Qu'est-ce que le 'PO Proxy' et pourquoi est-il problématique dans Scrum ?",
+options:["C'est un PO de remplacement en cas d'absence — acceptable","C'est un intermédiaire sans autorité réelle qui ne peut pas prendre de décisions souveraines sur la valeur","C'est le SM qui représente le PO lors des événements","C'est une pratique recommandée dans les grandes organisations"],
+answer:[1],trap:null,
+expl:"Un <strong>PO Proxy</strong> est problématique car il n'a généralement pas l'<strong>autorité pour prendre des décisions souveraines</strong> sur la valeur et l'ordre du backlog. Il crée une couche de communication supplémentaire et ralentit les décisions. Le Scrum Guide exige un PO avec une vraie autorité."},
+
+{id:620,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"The Development Team says the Sprint Goal is unrealistic and they cannot achieve it. The Sprint has already started. What is the correct Scrum approach?",
+options:["The Sprint Goal must be achieved regardless — the team committed to it","The team should transparently communicate this to the PO and collaboratively adjust the Sprint Backlog scope while maintaining the Sprint Goal","The Scrum Master changes the Sprint Goal to match what's achievable","The Sprint is automatically cancelled"],
+answer:[1],trap:null,
+expl:"L'équipe doit <strong>communiquer de manière transparente</strong> au PO. Ensemble, ils peuvent ajuster le <strong>périmètre des PBI</strong> (pas le Sprint Goal) pour trouver la meilleure façon d'atteindre l'objectif dans les contraintes réelles. L'annulation est la dernière option."},
+
+{id:621,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"Quel est l'impact d'un Product Backlog qui n'a jamais été refiné ?",
+options:["Aucun — le refinement est optionnel","Le Sprint Planning sera inefficace car les PBI ne sont pas clairs ni estimés","Les Sprints seront plus rapides sans refinement overhead","Le SM doit alors faire le refinement lui-même"],
+answer:[1],trap:null,
+expl:"Sans refinement, le Sprint Planning devient difficile car les PBI <strong>manquent de clarté et de détail</strong>. L'équipe perd du temps à clarifier en Sprint Planning ce qui aurait dû être fait en amont. La qualité du Sprint en souffre."},
+
+{id:622,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"An organization implements Scrum but keeps the old 'department silos' structure where QA, Development, and Design are separate departments that must formally request each other's work. How does this affect Scrum?",
+options:["This is fine — Scrum works with any organizational structure","This directly conflicts with Scrum's cross-functional team principle and will likely cause impediments and delays","The Scrum Master bridges the silos","Only the PO is impacted by this structure"],
+answer:[1],trap:null,
+expl:"Cette structure en <strong>silos contredit directement le principe de l'équipe pluridisciplinaire</strong> (cross-functional). Scrum requiert que l'équipe possède collectivement toutes les compétences nécessaires. Les silos créent des dépendances, des délais et entravent l'auto-gestion."},
+
+{id:623,section:"Cases & Anti-patterns",difficulty:"medium",multi:false,
+text:"'Scrum but' désigne :",
+options:["Une version simplifiée de Scrum pour les petites équipes","L'adoption partielle de Scrum qui garde les éléments confortables mais ignore les parties difficiles","Un framework complémentaire à Scrum","Une certification Scrum avancée"],
+answer:[1],trap:null,
+expl:"<strong>'Scrum but'</strong> ('On fait Scrum, mais...') désigne l'<strong>adoption partielle</strong> de Scrum : on garde ce qui est facile et confortable, on supprime ce qui est difficile (Rétrospectives, refinement, DoD stricte). Cela donne souvent les inconvénients de Scrum sans ses bénéfices."},
+
+{id:624,section:"Cases & Anti-patterns",difficulty:"hard",multi:false,
+text:"The Product Owner is creating a Product Roadmap with fixed dates for specific features. Stakeholders use this as a contract. What risk does this create?",
+options:["No risk — roadmaps are a standard product management tool","This creates unrealistic expectations that conflict with Scrum's empirical approach, where learning may change priorities","The Scrum Master should validate the roadmap first","Developers should commit to the roadmap dates"],
+answer:[1],trap:null,
+expl:"Traiter une roadmap comme un <strong>contrat avec des dates fixes</strong> crée des attentes irréalistes. Scrum est empirique — les apprentissages peuvent changer les priorités. Les dates et périmètres fixes sur une longue période contredisent l'adaptabilité. La roadmap devrait être vue comme une hypothèse."},
+
+{id:625,section:"Cases & Anti-patterns",difficulty:"easy",multi:false,
+text:"Quel comportement montre une bonne culture Scrum ?",
+options:["Cacher les problèmes pour ne pas paraître incompétent","Partager les obstacles lors du Daily Scrum pour obtenir de l'aide","Travailler sans interruption pour maximiser la productivité","Attendre la Sprint Review pour signaler les problèmes"],
+answer:[1],trap:null,
+expl:"Partager les obstacles lors du Daily Scrum illustre la <strong>transparence</strong> et le <strong>courage</strong> — deux valeurs Scrum fondamentales. Identifier rapidement les obstacles permet une adaptation plus rapide, ce qui est au cœur de l'empirisme Scrum."}
+
+]; // END QUESTION_BANK
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CONFIGURATION DU TIRAGE — Pondération par section
+   ═══════════════════════════════════════════════════════════════════════ */
+const DRAW_CONFIG = {
+  "PO & Product Value":      { target: 20, pct: 0.25 },  // 25%
+  "Scrum Framework":         { target: 12, pct: 0.15 },  // 15%
+  "Scrum Team":              { target: 12, pct: 0.15 },  // 15%
+  "Events":                  { target: 12, pct: 0.15 },  // 15%
+  "Artifacts & DoD":         { target: 12, pct: 0.15 },  // 15%
+  "Product Goal & Planning": { target: 8,  pct: 0.10 },  // 10%
+  "Cases & Anti-patterns":   { target: 4,  pct: 0.05 },  //  5%
+};
+
+// Répartition difficulté : 25% easy, 50% medium, 25% hard
+const DIFFICULTY_TARGETS = { easy: 0.25, medium: 0.50, hard: 0.25 };
+const EXAM_SIZE = 80;
+
+/* ═══════════════════════════════════════════════════════════════════════
+   STATE APPLICATION
+   ═══════════════════════════════════════════════════════════════════════ */
+let currentMode = 'exam';   // 'exam' | 'train'
+let examQuestions = [];     // Les 80 questions tirées
+let answers = {};           // { qId: [optIdx, ...] }
+let flagged = new Set();    // ids des questions flagguées
+let submitted = false;
+let reviewMode = false;
+let timerInterval = null;
+let secondsLeft = 3600;
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ÉCRAN DE DÉMARRAGE
+   ═══════════════════════════════════════════════════════════════════════ */
+function selectMode(mode) {
+  currentMode = mode;
+  document.getElementById('modeExam').classList.toggle('selected', mode === 'exam');
+  document.getElementById('modeTrain').classList.toggle('selected', mode === 'train');
+}
+
+function startExam() {
+  // Mettre à jour les badges
+  const modeLabel = currentMode === 'exam' ? 'MODE EXAMEN' : 'MODE ENTRAÎNEMENT';
+  document.getElementById('modeBadge').textContent = modeLabel;
+  document.getElementById('footerMode').textContent = modeLabel;
+
+  if (currentMode === 'train') {
+    document.getElementById('headerSub').textContent = '80 questions · Pas de timer · Correction immédiate';
+    document.getElementById('reviewBtn').style.display = 'none';
+  } else {
+    document.getElementById('headerSub').textContent = '80 questions · 60 minutes · Seuil de réussite : 85%';
+    document.getElementById('reviewBtn').style.display = 'inline-block';
+  }
+
+  // Cacher l'écran de démarrage, montrer l'app
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examApp').style.display = 'block';
+
+  // Tirer les questions et démarrer
+  initExam();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LOGIQUE DE TIRAGE — Weighted random draw without duplicates
+   ═══════════════════════════════════════════════════════════════════════ */
+function drawExam() {
+  const result = [];
+  const usedIds = new Set();
+
+  // 1. Grouper par section
+  const bySection = {};
+  for (const section of Object.keys(DRAW_CONFIG)) {
+    bySection[section] = shuffle(QUESTION_BANK.filter(q => q.section === section));
+  }
+
+  // 2. Pour chaque section, tirer le nombre cible en respectant la répartition de difficulté
+  for (const [section, config] of Object.entries(DRAW_CONFIG)) {
+    const pool = bySection[section];
+    const n = config.target;
+    const nEasy   = Math.round(n * DIFFICULTY_TARGETS.easy);
+    const nHard   = Math.round(n * DIFFICULTY_TARGETS.hard);
+    const nMedium = n - nEasy - nHard;
+
+    const easyPool   = shuffle(pool.filter(q => q.difficulty === 'easy'));
+    const mediumPool = shuffle(pool.filter(q => q.difficulty === 'medium'));
+    const hardPool   = shuffle(pool.filter(q => q.difficulty === 'hard'));
+
+    // Tirer avec fallback si pas assez d'une catégorie
+    const drawn = [];
+    drawn.push(...easyPool.slice(0, nEasy));
+    drawn.push(...mediumPool.slice(0, nMedium));
+    drawn.push(...hardPool.slice(0, nHard));
+
+    // Compléter si manque
+    if (drawn.length < n) {
+      const remaining = pool.filter(q => !drawn.includes(q));
+      drawn.push(...remaining.slice(0, n - drawn.length));
+    }
+
+    result.push(...drawn.slice(0, n));
+  }
+
+  // 3. Renuméroter les questions pour l'affichage (1-80)
+  return shuffle(result).slice(0, EXAM_SIZE).map((q, i) => ({
+    ...q,
+    displayId: i + 1
+  }));
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   INITIALISATION DE L'EXAMEN
+   ═══════════════════════════════════════════════════════════════════════ */
+function initExam() {
+  // Reset state
+  answers = {};
+  flagged = new Set();
+  submitted = false;
+  reviewMode = false;
+
+  // Tirer les questions
+  examQuestions = drawExam();
+
+  // Cache score / thèmes / missed
+  document.getElementById('scoreCard').style.display = 'none';
+  document.getElementById('themeScores').style.display = 'none';
+  document.getElementById('missedSection').style.display = 'none';
+
+  // Render
+  renderQuestions();
+  updateProgress();
+
+  // Timer
+  clearInterval(timerInterval);
+  if (currentMode === 'exam') {
+    secondsLeft = 3600;
+    document.getElementById('timer').textContent = '60:00';
+    document.getElementById('timer').className = 'timer';
+    startTimer();
+  } else {
+    document.getElementById('timer').textContent = '∞';
+    document.getElementById('timer').className = 'timer';
+  }
+
+  // Scroll top
+  window.scrollTo(0, 0);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RENDU DES QUESTIONS
+   ═══════════════════════════════════════════════════════════════════════ */
+function renderQuestions() {
+  const container = document.getElementById('questionsContainer');
+  const optLetters = ['A','B','C','D','E'];
+
+  let html = '';
+  let currentSection = '';
+  let sectionCount = 0;
+
+  examQuestions.forEach((q) => {
+    // En-tête de section
+    if (q.section !== currentSection) {
+      currentSection = q.section;
+      sectionCount++;
+      html += `<div class="section-header">
+        <div class="section-num">${sectionCount}</div>
+        <div class="section-title">${q.section}</div>
+        <div class="section-line"></div>
+      </div>`;
+    }
+
+    const inputType = q.multi ? 'checkbox' : 'radio';
+    const diffClass = `diff-${q.difficulty}`;
+    const diffLabel = { easy: 'FACILE', medium: 'MOYEN', hard: 'DIFFICILE' }[q.difficulty];
+
+    html += `<div class="q-card" id="qcard-${q.id}">
+      <div class="q-header">
+        <div class="q-num">${String(q.displayId).padStart(2,'0')}</div>
+        <div style="flex:1">
+          <div class="q-text">${q.text}</div>
+          ${q.multi ? '<div class="q-note">⚠️ Plusieurs réponses possibles</div>' : ''}
+        </div>
+        <div class="q-controls">
+          <span class="q-difficulty ${diffClass}">${diffLabel}</span>
+          <span class="q-tag">${q.section.split(' ')[0]}</span>
+          <button class="flag-btn" id="flag-${q.id}" onclick="toggleFlag(${q.id})" title="Marquer pour révision">🚩</button>
+        </div>
+      </div>
+      <div class="q-options">
+        ${q.options.map((opt, i) => `
+          <label class="option" id="opt-${q.id}-${i}">
+            <input type="${inputType}" name="q${q.id}" value="${i}" onchange="selectOption(${q.id}, ${i}, ${q.multi})">
+            <span class="option-letter">${optLetters[i]}.</span>
+            <span>${opt}</span>
+          </label>
+        `).join('')}
+      </div>
+      <div class="train-feedback" id="tf-${q.id}"></div>
+      <div class="explanation" id="expl-${q.id}">
+        <strong>✅ Explication :</strong> ${q.expl}
+      </div>
+      ${q.trap ? `<div class="trap-note" id="trap-${q.id}">🪤 <strong>Piège :</strong> ${q.trap}</div>` : ''}
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SÉLECTION DES RÉPONSES
+   ═══════════════════════════════════════════════════════════════════════ */
+function selectOption(qId, optIdx, isMulti) {
+  if (submitted) return;
+
+  if (!isMulti) {
+    answers[qId] = [optIdx];
+  } else {
+    if (!answers[qId]) answers[qId] = [];
+    const pos = answers[qId].indexOf(optIdx);
+    if (pos === -1) answers[qId].push(optIdx);
+    else answers[qId].splice(pos, 1);
+  }
+
+  updateCardStyle(qId);
+  updateProgress();
+
+  // Mode entraînement : correction immédiate
+  if (currentMode === 'train') {
+    showImmediateFeedback(qId);
+  }
+}
+
+function showImmediateFeedback(qId) {
+  const q = examQuestions.find(x => x.id === qId);
+  if (!q) return;
+  const userAns = answers[qId] || [];
+  if (userAns.length === 0) return;
+
+  const isCorrect = JSON.stringify([...userAns].sort()) === JSON.stringify([...q.answer].sort());
+  const tf = document.getElementById('tf-' + qId);
+  if (tf) {
+    tf.className = 'train-feedback show ' + (isCorrect ? 'train-correct' : 'train-wrong');
+    tf.innerHTML = isCorrect
+      ? '✅ Bonne réponse !'
+      : `❌ Incorrect. ${q.trap ? '🪤 ' + q.trap : ''}`;
+  }
+
+  // Colorier les options
+  q.options.forEach((_, i) => {
+    const opt = document.getElementById(`opt-${qId}-${i}`);
+    if (!opt) return;
+    opt.classList.remove('option-correct', 'option-wrong', 'selected');
+    if (q.answer.includes(i)) opt.classList.add('option-correct');
+    else if (userAns.includes(i)) opt.classList.add('option-wrong');
+  });
+
+  // Afficher l'explication
+  const expl = document.getElementById('expl-' + qId);
+  const trap = document.getElementById('trap-' + qId);
+  if (expl) expl.classList.add('show');
+  if (trap) trap.classList.add('show');
+}
+
+function updateCardStyle(qId) {
+  const card = document.getElementById('qcard-' + qId);
+  if (!card) return;
+  const ans = answers[qId];
+  if (ans && ans.length > 0) card.classList.add('answered');
+  else card.classList.remove('answered');
+}
+
+function toggleFlag(qId) {
+  const btn = document.getElementById('flag-' + qId);
+  if (flagged.has(qId)) { flagged.delete(qId); btn.classList.remove('flagged'); }
+  else { flagged.add(qId); btn.classList.add('flagged'); }
+}
+
+function toggleReview() {
+  if (currentMode === 'train' || submitted) return;
+  reviewMode = !reviewMode;
+  document.getElementById('reviewBtn').textContent = reviewMode ? '🙈 Masquer' : '👁 Révision';
+  examQuestions.forEach(q => {
+    const expl = document.getElementById('expl-' + q.id);
+    const trap = document.getElementById('trap-' + q.id);
+    if (expl) expl.classList.toggle('show', reviewMode);
+    if (trap) trap.classList.toggle('show', reviewMode);
+  });
+}
+
+function updateProgress() {
+  const answered = Object.keys(answers).filter(k => answers[k] && answers[k].length > 0).length;
+  const pct = (answered / EXAM_SIZE) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressTxt').textContent = `${answered} / ${EXAM_SIZE} répondues`;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TIMER
+   ═══════════════════════════════════════════════════════════════════════ */
+function startTimer() {
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    const m = Math.floor(secondsLeft / 60);
+    const s = secondsLeft % 60;
+    const el = document.getElementById('timer');
+    el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (secondsLeft <= 300) el.className = 'timer warning';
+    if (secondsLeft <= 60) el.className = 'timer danger';
+    if (secondsLeft <= 0) { clearInterval(timerInterval); submitExam(); }
+  }, 1000);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   SOUMISSION ET SCORING
+   ═══════════════════════════════════════════════════════════════════════ */
+function submitExam() {
+  if (submitted) return;
+  submitted = true;
+  clearInterval(timerInterval);
+
+  let correct = 0, wrong = 0, skipped = 0;
+  const themeData = {};
+  const missedQuestions = [];
+
+  // Init thèmes
+  for (const section of Object.keys(DRAW_CONFIG)) {
+    themeData[section] = { correct: 0, total: 0 };
+  }
+
+  // Scorer chaque question
+  examQuestions.forEach(q => {
+    const card = document.getElementById('qcard-' + q.id);
+    const userAns = answers[q.id] || [];
+    const correctAns = q.answer;
+    const isCorrect = JSON.stringify([...userAns].sort()) === JSON.stringify([...correctAns].sort());
+    const isSkipped = userAns.length === 0;
+
+    // Compteurs globaux
+    if (isSkipped) { skipped++; if (card) card.classList.add('skipped'); }
+    else if (isCorrect) { correct++; if (card) card.classList.add('correct'); }
+    else { wrong++; if (card) card.classList.add('incorrect'); }
+
+    // Compteurs par thème
+    if (themeData[q.section]) {
+      themeData[q.section].total++;
+      if (isCorrect) themeData[q.section].correct++;
+    }
+
+    // Colorer les options
+    q.options.forEach((_, i) => {
+      const opt = document.getElementById(`opt-${q.id}-${i}`);
+      if (!opt) return;
+      if (correctAns.includes(i)) opt.classList.add('option-correct');
+      else if (userAns.includes(i)) opt.classList.add('option-wrong');
+    });
+
+    // Afficher explications
+    const expl = document.getElementById('expl-' + q.id);
+    const trap = document.getElementById('trap-' + q.id);
+    if (expl) expl.classList.add('show');
+    if (trap && !isCorrect) trap.classList.add('show');
+
+    // Collecter les questions ratées
+    if (!isCorrect && !isSkipped) {
+      missedQuestions.push({ q, userAns });
+    }
+  });
+
+  const pct = Math.round((correct / EXAM_SIZE) * 100);
+  const passed = pct >= 85;
+
+  // ── Score card ──
+  document.getElementById('scoreNum').textContent = `${correct}/80`;
+  document.getElementById('scorePct').textContent = `${pct}%`;
+  document.getElementById('scoreCorrect').textContent = correct;
+  document.getElementById('scoreWrong').textContent = wrong;
+  document.getElementById('scoreSkipped').textContent = skipped;
+
+  const verdict = document.getElementById('scoreVerdict');
+  verdict.textContent = passed
+    ? '🏆  RÉUSSI — Vous êtes prêt(e) pour le PSPO I !'
+    : '❌  Non réussi — Révisez les thèmes ci-dessous et réessayez.';
+  verdict.className = 'score-verdict ' + (passed ? 'verdict-pass' : 'verdict-fail');
+  document.getElementById('scoreCard').style.display = 'block';
+
+  // ── Score par thème ──
+  renderThemeScores(themeData);
+
+  // ── Questions ratées ──
+  if (missedQuestions.length > 0) {
+    renderMissed(missedQuestions);
+  }
+
+  document.getElementById('scoreCard').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ── Score par thème ── */
+function renderThemeScores(themeData) {
+  const optLetters = ['A','B','C','D','E'];
+  let html = '';
+  const weakThemes = [];
+
+  for (const [section, data] of Object.entries(themeData)) {
+    if (data.total === 0) continue;
+    const pct = Math.round((data.correct / data.total) * 100);
+    const color = pct >= 85 ? '#10B981' : pct >= 60 ? '#F59E0B' : '#EF4444';
+    if (pct < 75) weakThemes.push({ section, pct });
+
+    html += `<div class="theme-row">
+      <div class="theme-name">${section}</div>
+      <div class="theme-bar-wrap">
+        <div class="theme-bar-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+      <div class="theme-score-txt" style="color:${color}">${data.correct}/${data.total} (${pct}%)</div>
+    </div>`;
+  }
+
+  document.getElementById('themeScoresContent').innerHTML = html;
+  document.getElementById('themeScores').style.display = 'block';
+
+  // Recommandations
+  if (weakThemes.length > 0) {
+    const recoMap = {
+      "PO & Product Value": "Relire les accountabilities du PO, la gestion du Product Backlog, et la notion de valeur selon le Scrum Guide.",
+      "Scrum Framework": "Revoir les piliers empiriques, les valeurs Scrum, et la définition officielle du framework.",
+      "Scrum Team": "Approfondir les accountabilities de chaque rôle et la notion d'auto-gestion.",
+      "Events": "Mémoriser les timeboxes, objectifs et participants de chaque événement.",
+      "Artifacts & DoD": "Revoir les 3 artefacts, leurs engagements et la Definition of Done.",
+      "Product Goal & Planning": "Approfondir les notions de Product Goal, Sprint Goal et processus de Sprint Planning.",
+      "Cases & Anti-patterns": "Étudier les pièges courants et les comportements conformes vs non-conformes à Scrum.",
+    };
+
+    let recoHtml = weakThemes.sort((a,b) => a.pct - b.pct).map(({ section, pct }) =>
+      `<div class="reco-item">📌 <strong>${section}</strong> (${pct}%) — ${recoMap[section] || 'Revoir le Scrum Guide 2020 sur ce thème.'}</div>`
+    ).join('');
+
+    document.getElementById('recoContent').innerHTML = recoHtml;
+    document.getElementById('recoBox').style.display = 'block';
+  }
+}
+
+/* ── Questions ratées ── */
+function renderMissed(missed) {
+  const optLetters = ['A','B','C','D','E'];
+  let html = '';
+  missed.forEach(({ q, userAns }) => {
+    const correctLabels = q.answer.map(i => `${optLetters[i]}. ${q.options[i]}`).join(', ');
+    html += `<div class="missed-q">
+      <div class="mq-text">Q${q.displayId}. ${q.text}</div>
+      <div class="mq-answer">✅ Bonne réponse : ${correctLabels}</div>
+      <div class="mq-expl">${q.expl.replace(/<[^>]*>/g, '')}</div>
+    </div>`;
+  });
+
+  document.getElementById('missedContent').innerHTML = html;
+  document.getElementById('missedSection').style.display = 'block';
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   NOUVEL EXAMEN
+   ═══════════════════════════════════════════════════════════════════════ */
+function confirmNewExam() {
+  if (!submitted) {
+    if (!confirm('Démarrer un nouvel examen ? Votre progression actuelle sera perdue.')) return;
+  }
+  initExam();
+  document.getElementById('scoreCard').style.display = 'none';
+  document.getElementById('themeScores').style.display = 'none';
+  document.getElementById('missedSection').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+</script>
+</body>
+</html>
