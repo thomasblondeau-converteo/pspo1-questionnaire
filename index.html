@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Questionnaire Blanc PSPO I V2 — Product·AI Consulting</title>
+<title>PSPO I Practice Simulator V3 — Converteo</title>
 <style>
 /* ═══════════════════════════════════════════════════════════════
    CSS — Identique à la V1 + nouvelles classes V2
@@ -210,38 +210,196 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
   .start-title { font-size: 28px; }
   .mode-card { width: 240px; }
 }
+
+/* ── USER IDENTIFICATION MODAL ── */
+#userModal {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.7); align-items: center; justify-content: center;
+}
+#userModal.show { display: flex; }
+.modal-box {
+  background: var(--navy-dk); border: 2px solid var(--teal); border-radius: 16px;
+  padding: 40px; width: 420px; max-width: 90vw; text-align: center;
+}
+.modal-box h2 { color: white; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.modal-box p { color: #8B8ECA; font-size: 13px; margin-bottom: 24px; }
+.modal-input {
+  width: 100%; padding: 12px 16px; border-radius: 8px;
+  border: 1.5px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06);
+  color: white; font-size: 14px; margin-bottom: 12px; outline: none; transition: border-color 0.2s;
+}
+.modal-input:focus { border-color: var(--teal); }
+.modal-input::placeholder { color: #555; }
+.modal-error { color: var(--red); font-size: 12px; margin-bottom: 10px; display: none; }
+.modal-error.show { display: block; }
+.logo-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.logo-wrap img { height: 30px; object-fit: contain; }
+.logo-fallback { font-size: 16px; font-weight: 900; color: var(--teal); letter-spacing: 1px; }
+.home-btn {
+  background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.2);
+  color: white; font-weight: 700; font-size: 12px; padding: 6px 14px; border-radius: 6px;
+  cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
+}
+.home-btn:hover { border-color: var(--teal); background: rgba(0,178,178,0.1); }
+#adminScreen {
+  display: none; min-height: 100vh; background: #F0F2F8;
+}
+.admin-header {
+  background: var(--navy-dk); padding: 18px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 3px solid var(--teal);
+}
+.admin-header h1 { color: white; font-size: 20px; font-weight: 800; }
+.admin-header h1 span { color: var(--teal); }
+.admin-body { max-width: 1200px; margin: 0 auto; padding: 32px 40px; }
+.admin-stats { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+.admin-stat-card {
+  background: white; border-radius: 10px; padding: 20px 24px;
+  border: 1.5px solid var(--gray-bdr); flex: 1; min-width: 140px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.admin-stat-card .n { font-size: 32px; font-weight: 900; color: var(--navy); }
+.admin-stat-card .l { font-size: 11px; color: var(--gray); font-weight: 600; letter-spacing: 1px; margin-top: 2px; }
+.admin-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.admin-search {
+  padding: 8px 14px; border-radius: 7px; border: 1.5px solid var(--gray-bdr);
+  font-size: 13px; width: 260px; outline: none; transition: border-color 0.2s;
+}
+.admin-search:focus { border-color: var(--teal); }
+.admin-table-wrap { background: white; border-radius: 12px; border: 1.5px solid var(--gray-bdr); overflow: auto; box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+.admin-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.admin-table th { background: var(--navy-dk); color: white; padding: 12px 14px; text-align: left; font-weight: 700; font-size: 11px; letter-spacing: 0.5px; white-space: nowrap; }
+.admin-table td { padding: 11px 14px; border-bottom: 1px solid var(--gray-bdr); vertical-align: middle; }
+.admin-table tr:hover td { background: #F8F9FF; }
+.admin-table tr:last-child td { border-bottom: none; }
+.eligible-badge { background: var(--green); color: white; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
+.not-eligible-badge { background: var(--gray); color: white; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
+.passed-badge { background: #DCFCE7; color: #166534; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+.failed-badge { background: #FEE2E2; color: #991B1B; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 3px; }
+.admin-section-title { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 14px; }
+.tab-filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab-filter { background: white; border: 1.5px solid var(--gray-bdr); color: var(--gray); font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 6px; cursor: pointer; transition: all 0.15s; }
+.tab-filter.active { border-color: var(--teal); color: var(--navy); background: var(--teal-lt); }
+.admin-empty { padding: 48px; text-align: center; color: var(--gray); font-size: 14px; }
+#adminModal { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; }
+#adminModal.show { display: flex; }
 </style>
+
+<!-- Firebase SDK (module) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+/* ── FIREBASE CONFIG — Replace with your project credentials ──
+   Create project at https://console.firebase.google.com
+   Enable Firestore, set rules to allow read/write only from your domain.       */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyATLSYsRC3sxqn6rYnmks2yL-vNqjwKyQY",
+  authDomain: "pspo-converteo-training.firebaseapp.com",
+  projectId: "pspo-converteo-training",
+  storageBucket: "pspo-converteo-training.firebasestorage.app",
+  messagingSenderId: "143182765794",
+  appId: "1:143182765794:web:17a07f53a4d4eaef2a88bb"
+};
+
+let db = null;
+let firebaseReady = false;
+try {
+  const app = initializeApp(FIREBASE_CONFIG);
+  db = getFirestore(app);
+  firebaseReady = true;
+} catch(e) {
+  console.warn("Firebase not configured — using localStorage fallback.");
+}
+
+window.__firebaseDb = db;
+window.__firebaseReady = firebaseReady;
+window.__fbCollection = collection;
+window.__fbAddDoc = addDoc;
+window.__fbGetDocs = getDocs;
+window.__fbQuery = query;
+window.__fbOrderBy = orderBy;
+window.__fbCollectionName = "pspo_attempts";
+</script>
 </head>
 <body>
 
 <!-- ═══════════════════════════════════════════════════════════
-     ÉCRAN DE DÉMARRAGE
+     USER IDENTIFICATION MODAL
+     ═══════════════════════════════════════════════════════════ -->
+<div id="userModal">
+  <div class="modal-box">
+    <h2>👤 Identify Yourself</h2>
+    <p>Your results will be recorded to track your progress.</p>
+    <input class="modal-input" id="inputName" type="text" placeholder="Full name" autocomplete="name">
+    <input class="modal-input" id="inputEmail" type="email" placeholder="Professional email (e.g. j.doe@converteo.com)" autocomplete="email">
+    <div class="modal-error" id="userModalError">Please fill in your name and a valid email address.</div>
+    <button class="start-btn" style="margin-bottom:0;width:100%" onclick="confirmUserAndStart()">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ADMIN PASSWORD MODAL
+     ═══════════════════════════════════════════════════════════ -->
+<div id="adminModal">
+  <div class="modal-box">
+    <h2>🔒 Admin Access</h2>
+    <p>Enter the admin password to access the results dashboard.</p>
+    <input class="modal-input" id="adminPasswordInput" type="password" placeholder="Admin password" onkeydown="if(event.key==='Enter')checkAdminPassword()">
+    <div class="modal-error" id="adminModalError">Incorrect password. Access denied.</div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="start-btn" style="margin-bottom:0;flex:1;font-size:14px;padding:12px" onclick="checkAdminPassword()">Access →</button>
+      <button class="start-btn" style="margin-bottom:0;background:var(--purple);color:white;font-size:14px;padding:12px" onclick="closeAdminModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HOME / START SCREEN
      ═══════════════════════════════════════════════════════════ -->
 <div id="startScreen">
-  <div class="start-brand">PRODUCT·AI CONSULTING  /  FORMATION PSPO I</div>
-  <div class="start-title">Questionnaire Blanc <span>PSPO I</span></div>
-  <div class="start-sub">Banque de 500 questions · Tirage aléatoire · Scrum Guide 2020</div>
+  <!-- Logo top-left -->
+  <div style="position:absolute;top:24px;left:32px">
+    <div class="logo-wrap">
+      <img src="https://i.postimg.cc/vT1MMHhg/logo-converteo.png" alt="Converteo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span class="logo-fallback" style="display:none">Converteo</span>
+    </div>
+  </div>
+
+  <div class="start-brand">CONVERTEO  /  PSPO I INTERNAL TRAINING</div>
+  <div class="start-title">PSPO I Practice <span>Simulator</span></div>
+  <div class="start-sub">Train for the Scrum.org PSPO I assessment · Scrum Guide 2020 · 500-question bank · Randomized draw</div>
 
   <div class="start-modes">
     <div class="mode-card selected" onclick="selectMode('exam')" id="modeExam">
       <div class="mode-icon">🎯</div>
-      <div class="mode-name">Mode Examen</div>
-      <div class="mode-desc">80 questions aléatoires · 60 minutes chrono · Correction uniquement à la fin · Conditions réelles PSPO I</div>
+      <div class="mode-name">Full Exam</div>
+      <div class="mode-desc">80 questions · 60 min timer · Correction at the end · Real PSPO I conditions</div>
     </div>
     <div class="mode-card" onclick="selectMode('train')" id="modeTrain">
       <div class="mode-icon">📚</div>
-      <div class="mode-name">Mode Entraînement</div>
-      <div class="mode-desc">80 questions · Pas de timer · Correction immédiate après chaque réponse · Explications au fil de l'eau</div>
+      <div class="mode-name">Training Mode</div>
+      <div class="mode-desc">80 questions · No timer · Immediate feedback after each answer · Explanations inline</div>
+    </div>
+    <div class="mode-card" onclick="selectMode('quick')" id="modeQuick">
+      <div class="mode-icon">⚡</div>
+      <div class="mode-name">Quick Test</div>
+      <div class="mode-desc">20 questions · ~15 min timer · Correction at the end · Quick warm-up session</div>
     </div>
   </div>
 
-  <button class="start-btn" onclick="startExam()">Démarrer →</button>
+  <button class="start-btn" onclick="openUserModal()">Start →</button>
 
   <div class="start-stats">
     <div class="start-stat"><div class="n">500</div><div class="l">QUESTIONS</div></div>
-    <div class="start-stat"><div class="n">80</div><div class="l">PAR EXAMEN</div></div>
-    <div class="start-stat"><div class="n">85%</div><div class="l">SEUIL PSPO I</div></div>
-    <div class="start-stat"><div class="n">60<small style="font-size:14px">min</small></div><div class="l">DURÉE EXAMEN</div></div>
+    <div class="start-stat"><div class="n">80</div><div class="l">PER FULL EXAM</div></div>
+    <div class="start-stat"><div class="n">85%</div><div class="l">PASSING THRESHOLD</div></div>
+    <div class="start-stat"><div class="n">60<small style="font-size:14px">min</small></div><div class="l">FULL EXAM TIMER</div></div>
+  </div>
+
+  <!-- Discreet admin link -->
+  <div style="margin-top:40px">
+    <button onclick="openAdminModal()" style="background:none;border:none;color:#3D3B6A;font-size:11px;cursor:pointer;text-decoration:underline">Admin Access</button>
   </div>
 </div>
 
@@ -252,16 +410,25 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
 
   <div class="header">
     <div class="header-inner">
-      <div class="header-left">
-        <div class="brand">PRODUCT·AI CONSULTING  /  PSPO I</div>
-        <h1>Questionnaire Blanc <span>PSPO I</span></h1>
-        <p id="headerSub">80 questions · 60 minutes · Seuil de réussite : 85%</p>
+      <div class="header-left" style="display:flex;align-items:center;gap:18px">
+        <div class="logo-wrap" onclick="goHome()" title="Return to home">
+          <img src="https://i.postimg.cc/vT1MMHhg/logo-converteo.png" alt="Converteo" style="height:28px;filter:brightness(0) invert(1)" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <span class="logo-fallback" style="display:none">Converteo</span>
+        </div>
+        <div>
+          <div class="brand">CONVERTEO  /  PSPO I</div>
+          <h1>PSPO I Practice <span>Simulator</span></h1>
+          <p id="headerSub">80 questions · 60 minutes · Passing threshold: 85%</p>
+        </div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;z-index:2">
-        <span class="mode-badge" id="modeBadge">MODE EXAMEN</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          <button class="home-btn" onclick="goHome()">🏠 Home</button>
+          <span class="mode-badge" id="modeBadge">FULL EXAM</span>
+        </div>
         <div class="meta-row">
-          <div class="meta-badge">❓ <span class="val">80</span> questions</div>
-          <div class="meta-badge">🎯 Seuil <span class="val">85%</span></div>
+          <div class="meta-badge">❓ <span class="val" id="questionCountBadge">80</span> questions</div>
+          <div class="meta-badge">🎯 Threshold <span class="val">85%</span></div>
           <div class="meta-badge">📖 Scrum Guide <span class="val">2020</span></div>
         </div>
       </div>
@@ -273,12 +440,12 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
       <div class="timer" id="timer">60:00</div>
       <div class="progress-wrap">
         <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-        <div class="progress-txt" id="progressTxt">0 / 80 répondues</div>
+        <div class="progress-txt" id="progressTxt">0 / 80 answered</div>
       </div>
       <div class="ctrl-group">
-        <button class="btn btn-secondary" id="reviewBtn" onclick="toggleReview()" style="display:none">👁 Révision</button>
-        <button class="btn btn-new" onclick="confirmNewExam()">🔀 Nouvel examen</button>
-        <button class="btn btn-danger" onclick="submitExam()">✅ Terminer</button>
+        <button class="btn btn-secondary" id="reviewBtn" onclick="toggleReview()" style="display:none">👁 Review</button>
+        <button class="btn btn-new" onclick="confirmNewExam()">🔀 New exam</button>
+        <button class="btn btn-danger" onclick="submitExam()">✅ Submit</button>
       </div>
     </div>
   </div>
@@ -286,31 +453,31 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
   <div class="main">
     <!-- Score card -->
     <div class="score-card" id="scoreCard">
-      <h2>Résultat de l'examen</h2>
+      <h2>Exam Results</h2>
       <div class="score-big" id="scoreNum">--</div>
       <div class="score-pct" id="scorePct">-- %</div>
       <div class="score-details">
-        <div class="score-stat"><div class="n" id="scoreCorrect" style="color:var(--green)">-</div><div class="l">Correctes</div></div>
-        <div class="score-stat"><div class="n" id="scoreWrong" style="color:var(--red)">-</div><div class="l">Incorrectes</div></div>
-        <div class="score-stat"><div class="n" id="scoreSkipped" style="color:var(--gold)">-</div><div class="l">Non répondues</div></div>
+        <div class="score-stat"><div class="n" id="scoreCorrect" style="color:var(--green)">-</div><div class="l">Correct</div></div>
+        <div class="score-stat"><div class="n" id="scoreWrong" style="color:var(--red)">-</div><div class="l">Incorrect</div></div>
+        <div class="score-stat"><div class="n" id="scoreSkipped" style="color:var(--gold)">-</div><div class="l">Skipped</div></div>
       </div>
       <div class="score-verdict" id="scoreVerdict"></div>
-      <p style="margin-top:14px;font-size:11px;color:#8B8ECA;position:relative">Les réponses correctes sont affichées en vert · Explications disponibles sous chaque question</p>
+      <p style="margin-top:14px;font-size:11px;color:#8B8ECA;position:relative">Correct answers shown in green · Explanations available under each question</p>
     </div>
 
-    <!-- Score par thème -->
+    <!-- Score by theme -->
     <div class="theme-scores" id="themeScores">
-      <h3>📊 Score par thème</h3>
+      <h3>📊 Score by Topic</h3>
       <div id="themeScoresContent"></div>
       <div class="reco-box" id="recoBox" style="display:none">
-        <h4>📌 Thèmes à réviser en priorité</h4>
+        <h4>📌 Priority topics to review</h4>
         <div id="recoContent"></div>
       </div>
     </div>
 
-    <!-- Questions ratées -->
+    <!-- Missed questions -->
     <div class="missed-section" id="missedSection">
-      <h3>❌ Questions ratées — À revoir</h3>
+      <h3>❌ Missed Questions — Review These</h3>
       <div id="missedContent"></div>
     </div>
 
@@ -319,7 +486,68 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
   </div>
 
   <div class="footer-bar">
-    Product·AI Consulting · Formation PSPO I V2 · Basé sur The Scrum Guide 2020 (scrumguides.org) · <span id="footerMode"></span>
+    Converteo · PSPO I Practice Simulator V3 · Based on The Scrum Guide 2020 (scrumguides.org) · <span id="footerMode"></span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ADMIN DASHBOARD
+     ═══════════════════════════════════════════════════════════ -->
+<div id="adminScreen">
+  <div class="admin-header">
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="logo-wrap" onclick="showScreen('start')">
+        <img src="https://i.postimg.cc/vT1MMHhg/logo-converteo.png" alt="Converteo" style="height:28px;filter:brightness(0) invert(1)" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <span class="logo-fallback" style="display:none">Converteo</span>
+      </div>
+      <h1>Admin Dashboard — <span>PSPO I Results</span></h1>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" onclick="exportCSV()">⬇️ Export CSV</button>
+      <button class="btn btn-secondary" onclick="showScreen('start')">← Back to Home</button>
+    </div>
+  </div>
+  <div class="admin-body">
+    <!-- Stats -->
+    <div class="admin-stats">
+      <div class="admin-stat-card"><div class="n" id="adminTotalAttempts">—</div><div class="l">TOTAL ATTEMPTS</div></div>
+      <div class="admin-stat-card"><div class="n" id="adminTotalUsers">—</div><div class="l">UNIQUE USERS</div></div>
+      <div class="admin-stat-card"><div class="n" id="adminEligibleCount">—</div><div class="l">VOUCHER ELIGIBLE</div></div>
+      <div class="admin-stat-card"><div class="n" id="adminAvgScore">—</div><div class="l">AVG SCORE (FULL EXAM)</div></div>
+    </div>
+
+    <!-- Filter toolbar -->
+    <div class="admin-toolbar">
+      <input class="admin-search" id="adminSearchInput" type="text" placeholder="🔍 Filter by name or email..." oninput="renderAdminTable()">
+      <div class="tab-filters">
+        <button class="tab-filter active" id="filterAll" onclick="setModeFilter('all')">All modes</button>
+        <button class="tab-filter" id="filterExam" onclick="setModeFilter('exam')">Full Exam</button>
+        <button class="tab-filter" id="filterTrain" onclick="setModeFilter('train')">Training</button>
+        <button class="tab-filter" id="filterQuick" onclick="setModeFilter('quick')">Quick Test</button>
+      </div>
+    </div>
+
+    <!-- User table -->
+    <div class="admin-section-title">👥 User Attempts</div>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mode</th>
+            <th>Score</th>
+            <th>%</th>
+            <th>Result</th>
+            <th>Date</th>
+            <th>Voucher Eligibility</th>
+          </tr>
+        </thead>
+        <tbody id="adminTableBody">
+          <tr><td colspan="8" class="admin-empty">Loading results...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -1715,62 +1943,163 @@ expl:"Partager les obstacles lors du Daily Scrum illustre la <strong>transparenc
 ]; // END QUESTION_BANK
 
 /* ═══════════════════════════════════════════════════════════════════════
-   CONFIGURATION DU TIRAGE — Pondération par section
+   ██████  CONFIGURATION V3
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── ADMIN CREDENTIALS (change before deploying) ── */
+const ADMIN_PASSWORD = "TeamProductPSPO2026!";
+const ADMIN_EMAILS   = ["admin@converteo.com", "training@converteo.com"];
+
+/* ── VOUCHER ELIGIBILITY RULE ── */
+const REQUIRED_PASSED_FULL_EXAMS = 3;
+const PASS_THRESHOLD_PCT = 85;
+
+/* ── CONVERTEO LOGO ── */
+const CONVERTEO_LOGO_URL = "https://i.postimg.cc/vT1MMHhg/logo-converteo.png";
+
+/* ── TEST MODES CONFIG ── */
+const TEST_MODES = {
+  exam:  { questionCount: 80, timerSeconds: 3600, immediateFeedback: false, countsForVoucher: true,  label: "FULL EXAM",     timerLabel: "60:00" },
+  train: { questionCount: 80, timerSeconds: null,  immediateFeedback: true,  countsForVoucher: false, label: "TRAINING MODE", timerLabel: "∞"     },
+  quick: { questionCount: 20, timerSeconds: 900,   immediateFeedback: false, countsForVoucher: false, label: "QUICK TEST",    timerLabel: "15:00" }
+};
+/* ═══════════════════════════════════════════════════════════════════════
+   DRAW CONFIG — Weighted section draw
    ═══════════════════════════════════════════════════════════════════════ */
 const DRAW_CONFIG = {
-  "PO & Product Value":      { target: 20, pct: 0.25 },  // 25%
-  "Scrum Framework":         { target: 12, pct: 0.15 },  // 15%
-  "Scrum Team":              { target: 12, pct: 0.15 },  // 15%
-  "Events":                  { target: 12, pct: 0.15 },  // 15%
-  "Artifacts & DoD":         { target: 12, pct: 0.15 },  // 15%
-  "Product Goal & Planning": { target: 8,  pct: 0.10 },  // 10%
-  "Cases & Anti-patterns":   { target: 4,  pct: 0.05 },  //  5%
+  "PO & Product Value":      { target: 20, pct: 0.25 },
+  "Scrum Framework":         { target: 12, pct: 0.15 },
+  "Scrum Team":              { target: 12, pct: 0.15 },
+  "Events":                  { target: 12, pct: 0.15 },
+  "Artifacts & DoD":         { target: 12, pct: 0.15 },
+  "Product Goal & Planning": { target: 8,  pct: 0.10 },
+  "Cases & Anti-patterns":   { target: 4,  pct: 0.05 },
 };
 
-// Répartition difficulté : 25% easy, 50% medium, 25% hard
 const DIFFICULTY_TARGETS = { easy: 0.25, medium: 0.50, hard: 0.25 };
-const EXAM_SIZE = 80;
+let EXAM_SIZE = 80; // updated dynamically per mode
 
 /* ═══════════════════════════════════════════════════════════════════════
-   STATE APPLICATION
+   APPLICATION STATE
    ═══════════════════════════════════════════════════════════════════════ */
-let currentMode = 'exam';   // 'exam' | 'train'
-let examQuestions = [];     // Les 80 questions tirées
-let answers = {};           // { qId: [optIdx, ...] }
-let flagged = new Set();    // ids des questions flagguées
+let currentMode = 'exam';
+let examQuestions = [];
+let answers = {};
+let flagged = new Set();
 let submitted = false;
 let reviewMode = false;
 let timerInterval = null;
 let secondsLeft = 3600;
+let currentUser = { name: '', email: '' };
+let adminModeFilter = 'all';
+let allAttempts = [];
 
 /* ═══════════════════════════════════════════════════════════════════════
-   ÉCRAN DE DÉMARRAGE
+   SCREEN MANAGEMENT
+   ═══════════════════════════════════════════════════════════════════════ */
+function showScreen(screen) {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('examApp').style.display     = 'none';
+  document.getElementById('adminScreen').style.display = 'none';
+
+  if (screen === 'start') {
+    document.getElementById('startScreen').style.display = 'flex';
+    document.getElementById('startScreen').style.flexDirection = 'column';
+    document.getElementById('startScreen').style.alignItems = 'center';
+    document.getElementById('startScreen').style.justifyContent = 'center';
+  } else if (screen === 'exam') {
+    document.getElementById('examApp').style.display = 'block';
+  } else if (screen === 'admin') {
+    document.getElementById('adminScreen').style.display = 'block';
+    loadAndRenderAdmin();
+  }
+}
+
+function goHome() {
+  if (!submitted && examQuestions.length > 0) {
+    if (!confirm('Return to home? Your current exam progress will be lost.')) return;
+  }
+  clearInterval(timerInterval);
+  showScreen('start');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HOME SCREEN / MODE SELECTION
    ═══════════════════════════════════════════════════════════════════════ */
 function selectMode(mode) {
   currentMode = mode;
   document.getElementById('modeExam').classList.toggle('selected', mode === 'exam');
   document.getElementById('modeTrain').classList.toggle('selected', mode === 'train');
+  document.getElementById('modeQuick').classList.toggle('selected', mode === 'quick');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   USER IDENTIFICATION
+   ═══════════════════════════════════════════════════════════════════════ */
+function openUserModal() {
+  document.getElementById('userModal').classList.add('show');
+  document.getElementById('inputName').focus();
+}
+
+function confirmUserAndStart() {
+  const name  = document.getElementById('inputName').value.trim();
+  const email = document.getElementById('inputEmail').value.trim();
+  const err   = document.getElementById('userModalError');
+
+  if (!name || !email || !email.includes('@')) {
+    err.classList.add('show');
+    return;
+  }
+  err.classList.remove('show');
+  currentUser = { name, email };
+  document.getElementById('userModal').classList.remove('show');
+  startExam();
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ADMIN ACCESS
+   ═══════════════════════════════════════════════════════════════════════ */
+function openAdminModal() {
+  document.getElementById('adminPasswordInput').value = '';
+  document.getElementById('adminModalError').classList.remove('show');
+  document.getElementById('adminModal').classList.add('show');
+  setTimeout(() => document.getElementById('adminPasswordInput').focus(), 100);
+}
+
+function closeAdminModal() {
+  document.getElementById('adminModal').classList.remove('show');
+}
+
+function checkAdminPassword() {
+  const pw = document.getElementById('adminPasswordInput').value;
+  if (pw === ADMIN_PASSWORD) {
+    closeAdminModal();
+    showScreen('admin');
+  } else {
+    document.getElementById('adminModalError').classList.add('show');
+  }
 }
 
 function startExam() {
-  // Mettre à jour les badges
-  const modeLabel = currentMode === 'exam' ? 'MODE EXAMEN' : 'MODE ENTRAÎNEMENT';
-  document.getElementById('modeBadge').textContent = modeLabel;
-  document.getElementById('footerMode').textContent = modeLabel;
+  const modeConfig = TEST_MODES[currentMode];
+  EXAM_SIZE = modeConfig.questionCount;
+
+  document.getElementById('modeBadge').textContent = modeConfig.label;
+  document.getElementById('footerMode').textContent = modeConfig.label;
+  document.getElementById('questionCountBadge').textContent = modeConfig.questionCount;
 
   if (currentMode === 'train') {
-    document.getElementById('headerSub').textContent = '80 questions · Pas de timer · Correction immédiate';
+    document.getElementById('headerSub').textContent = '80 questions · No timer · Immediate feedback';
     document.getElementById('reviewBtn').style.display = 'none';
+  } else if (currentMode === 'quick') {
+    document.getElementById('headerSub').textContent = '20 questions · ~15 min · Correction at end';
+    document.getElementById('reviewBtn').style.display = 'inline-block';
   } else {
-    document.getElementById('headerSub').textContent = '80 questions · 60 minutes · Seuil de réussite : 85%';
+    document.getElementById('headerSub').textContent = '80 questions · 60 minutes · Passing threshold: 85%';
     document.getElementById('reviewBtn').style.display = 'inline-block';
   }
 
-  // Cacher l'écran de démarrage, montrer l'app
-  document.getElementById('startScreen').style.display = 'none';
-  document.getElementById('examApp').style.display = 'block';
-
-  // Tirer les questions et démarrer
+  showScreen('exam');
   initExam();
 }
 
@@ -1831,32 +2160,28 @@ function shuffle(arr) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   INITIALISATION DE L'EXAMEN
+   EXAM INITIALIZATION
    ═══════════════════════════════════════════════════════════════════════ */
 function initExam() {
-  // Reset state
   answers = {};
   flagged = new Set();
   submitted = false;
   reviewMode = false;
 
-  // Tirer les questions
   examQuestions = drawExam();
 
-  // Cache score / thèmes / missed
   document.getElementById('scoreCard').style.display = 'none';
   document.getElementById('themeScores').style.display = 'none';
   document.getElementById('missedSection').style.display = 'none';
 
-  // Render
   renderQuestions();
   updateProgress();
 
-  // Timer
   clearInterval(timerInterval);
-  if (currentMode === 'exam') {
-    secondsLeft = 3600;
-    document.getElementById('timer').textContent = '60:00';
+  const modeConfig = TEST_MODES[currentMode];
+  if (modeConfig.timerSeconds) {
+    secondsLeft = modeConfig.timerSeconds;
+    document.getElementById('timer').textContent = modeConfig.timerLabel;
     document.getElementById('timer').className = 'timer';
     startTimer();
   } else {
@@ -1864,7 +2189,6 @@ function initExam() {
     document.getElementById('timer').className = 'timer';
   }
 
-  // Scroll top
   window.scrollTo(0, 0);
 }
 
@@ -1893,14 +2217,14 @@ function renderQuestions() {
 
     const inputType = q.multi ? 'checkbox' : 'radio';
     const diffClass = `diff-${q.difficulty}`;
-    const diffLabel = { easy: 'FACILE', medium: 'MOYEN', hard: 'DIFFICILE' }[q.difficulty];
+    const diffLabel = { easy: 'EASY', medium: 'MEDIUM', hard: 'HARD' }[q.difficulty];
 
     html += `<div class="q-card" id="qcard-${q.id}">
       <div class="q-header">
         <div class="q-num">${String(q.displayId).padStart(2,'0')}</div>
         <div style="flex:1">
           <div class="q-text">${q.text}</div>
-          ${q.multi ? '<div class="q-note">⚠️ Plusieurs réponses possibles</div>' : ''}
+          ${q.multi ? '<div class="q-note">⚠️ Multiple answers possible</div>' : ''}
         </div>
         <div class="q-controls">
           <span class="q-difficulty ${diffClass}">${diffLabel}</span>
@@ -1919,7 +2243,7 @@ function renderQuestions() {
       </div>
       <div class="train-feedback" id="tf-${q.id}"></div>
       <div class="explanation" id="expl-${q.id}">
-        <strong>✅ Explication :</strong> ${q.expl}
+        <strong>✅ Explanation:</strong> ${q.expl}
       </div>
       ${q.trap ? `<div class="trap-note" id="trap-${q.id}">🪤 <strong>Piège :</strong> ${q.trap}</div>` : ''}
     </div>`;
@@ -1946,8 +2270,8 @@ function selectOption(qId, optIdx, isMulti) {
   updateCardStyle(qId);
   updateProgress();
 
-  // Mode entraînement : correction immédiate
-  if (currentMode === 'train') {
+  // Immediate feedback in training mode
+  if (TEST_MODES[currentMode].immediateFeedback) {
     showImmediateFeedback(qId);
   }
 }
@@ -1963,11 +2287,10 @@ function showImmediateFeedback(qId) {
   if (tf) {
     tf.className = 'train-feedback show ' + (isCorrect ? 'train-correct' : 'train-wrong');
     tf.innerHTML = isCorrect
-      ? '✅ Bonne réponse !'
+      ? '✅ Correct!'
       : `❌ Incorrect. ${q.trap ? '🪤 ' + q.trap : ''}`;
   }
 
-  // Colorier les options
   q.options.forEach((_, i) => {
     const opt = document.getElementById(`opt-${qId}-${i}`);
     if (!opt) return;
@@ -1976,7 +2299,6 @@ function showImmediateFeedback(qId) {
     else if (userAns.includes(i)) opt.classList.add('option-wrong');
   });
 
-  // Afficher l'explication
   const expl = document.getElementById('expl-' + qId);
   const trap = document.getElementById('trap-' + qId);
   if (expl) expl.classList.add('show');
@@ -1998,9 +2320,9 @@ function toggleFlag(qId) {
 }
 
 function toggleReview() {
-  if (currentMode === 'train' || submitted) return;
+  if (TEST_MODES[currentMode].immediateFeedback || submitted) return;
   reviewMode = !reviewMode;
-  document.getElementById('reviewBtn').textContent = reviewMode ? '🙈 Masquer' : '👁 Révision';
+  document.getElementById('reviewBtn').textContent = reviewMode ? '🙈 Hide' : '👁 Review';
   examQuestions.forEach(q => {
     const expl = document.getElementById('expl-' + q.id);
     const trap = document.getElementById('trap-' + q.id);
@@ -2013,7 +2335,7 @@ function updateProgress() {
   const answered = Object.keys(answers).filter(k => answers[k] && answers[k].length > 0).length;
   const pct = (answered / EXAM_SIZE) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressTxt').textContent = `${answered} / ${EXAM_SIZE} répondues`;
+  document.getElementById('progressTxt').textContent = `${answered} / ${EXAM_SIZE} answered`;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -2033,7 +2355,7 @@ function startTimer() {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   SOUMISSION ET SCORING
+   SUBMISSION & SCORING
    ═══════════════════════════════════════════════════════════════════════ */
 function submitExam() {
   if (submitted) return;
@@ -2044,12 +2366,10 @@ function submitExam() {
   const themeData = {};
   const missedQuestions = [];
 
-  // Init thèmes
   for (const section of Object.keys(DRAW_CONFIG)) {
     themeData[section] = { correct: 0, total: 0 };
   }
 
-  // Scorer chaque question
   examQuestions.forEach(q => {
     const card = document.getElementById('qcard-' + q.id);
     const userAns = answers[q.id] || [];
@@ -2057,18 +2377,15 @@ function submitExam() {
     const isCorrect = JSON.stringify([...userAns].sort()) === JSON.stringify([...correctAns].sort());
     const isSkipped = userAns.length === 0;
 
-    // Compteurs globaux
     if (isSkipped) { skipped++; if (card) card.classList.add('skipped'); }
     else if (isCorrect) { correct++; if (card) card.classList.add('correct'); }
     else { wrong++; if (card) card.classList.add('incorrect'); }
 
-    // Compteurs par thème
     if (themeData[q.section]) {
       themeData[q.section].total++;
       if (isCorrect) themeData[q.section].correct++;
     }
 
-    // Colorer les options
     q.options.forEach((_, i) => {
       const opt = document.getElementById(`opt-${q.id}-${i}`);
       if (!opt) return;
@@ -2076,23 +2393,20 @@ function submitExam() {
       else if (userAns.includes(i)) opt.classList.add('option-wrong');
     });
 
-    // Afficher explications
     const expl = document.getElementById('expl-' + q.id);
     const trap = document.getElementById('trap-' + q.id);
     if (expl) expl.classList.add('show');
     if (trap && !isCorrect) trap.classList.add('show');
 
-    // Collecter les questions ratées
     if (!isCorrect && !isSkipped) {
       missedQuestions.push({ q, userAns });
     }
   });
 
   const pct = Math.round((correct / EXAM_SIZE) * 100);
-  const passed = pct >= 85;
+  const passed = pct >= PASS_THRESHOLD_PCT;
 
-  // ── Score card ──
-  document.getElementById('scoreNum').textContent = `${correct}/80`;
+  document.getElementById('scoreNum').textContent = `${correct}/${EXAM_SIZE}`;
   document.getElementById('scorePct').textContent = `${pct}%`;
   document.getElementById('scoreCorrect').textContent = correct;
   document.getElementById('scoreWrong').textContent = wrong;
@@ -2100,18 +2414,17 @@ function submitExam() {
 
   const verdict = document.getElementById('scoreVerdict');
   verdict.textContent = passed
-    ? '🏆  RÉUSSI — Vous êtes prêt(e) pour le PSPO I !'
-    : '❌  Non réussi — Révisez les thèmes ci-dessous et réessayez.';
+    ? '🏆  PASSED — You are ready for the PSPO I!'
+    : '❌  Not passed — Review the topics below and try again.';
   verdict.className = 'score-verdict ' + (passed ? 'verdict-pass' : 'verdict-fail');
   document.getElementById('scoreCard').style.display = 'block';
 
-  // ── Score par thème ──
   renderThemeScores(themeData);
+  if (missedQuestions.length > 0) renderMissed(missedQuestions);
 
-  // ── Questions ratées ──
-  if (missedQuestions.length > 0) {
-    renderMissed(missedQuestions);
-  }
+  // Persist the attempt
+  saveAttempt({ correct, wrong, skipped, pct, passed, themeData,
+    failedQuestions: missedQuestions.map(m => m.q.id) });
 
   document.getElementById('scoreCard').scrollIntoView({ behavior: 'smooth' });
 }
@@ -2140,20 +2453,19 @@ function renderThemeScores(themeData) {
   document.getElementById('themeScoresContent').innerHTML = html;
   document.getElementById('themeScores').style.display = 'block';
 
-  // Recommandations
   if (weakThemes.length > 0) {
     const recoMap = {
-      "PO & Product Value": "Relire les accountabilities du PO, la gestion du Product Backlog, et la notion de valeur selon le Scrum Guide.",
-      "Scrum Framework": "Revoir les piliers empiriques, les valeurs Scrum, et la définition officielle du framework.",
-      "Scrum Team": "Approfondir les accountabilities de chaque rôle et la notion d'auto-gestion.",
-      "Events": "Mémoriser les timeboxes, objectifs et participants de chaque événement.",
-      "Artifacts & DoD": "Revoir les 3 artefacts, leurs engagements et la Definition of Done.",
-      "Product Goal & Planning": "Approfondir les notions de Product Goal, Sprint Goal et processus de Sprint Planning.",
-      "Cases & Anti-patterns": "Étudier les pièges courants et les comportements conformes vs non-conformes à Scrum.",
+      "PO & Product Value": "Review PO accountabilities, Product Backlog management, and the concept of value per the Scrum Guide.",
+      "Scrum Framework": "Revisit the empirical pillars, Scrum values, and the official framework definition.",
+      "Scrum Team": "Deepen your understanding of each role's accountabilities and self-management.",
+      "Events": "Memorize the timeboxes, objectives, and participants for each Scrum event.",
+      "Artifacts & DoD": "Review the 3 artifacts, their commitments, and the Definition of Done.",
+      "Product Goal & Planning": "Strengthen your grasp of Product Goal, Sprint Goal, and Sprint Planning.",
+      "Cases & Anti-patterns": "Study common traps and Scrum-compliant vs non-compliant behaviors.",
     };
 
     let recoHtml = weakThemes.sort((a,b) => a.pct - b.pct).map(({ section, pct }) =>
-      `<div class="reco-item">📌 <strong>${section}</strong> (${pct}%) — ${recoMap[section] || 'Revoir le Scrum Guide 2020 sur ce thème.'}</div>`
+      `<div class="reco-item">📌 <strong>${section}</strong> (${pct}%) — ${recoMap[section] || 'Review the Scrum Guide 2020 on this topic.'}</div>`
     ).join('');
 
     document.getElementById('recoContent').innerHTML = recoHtml;
@@ -2161,7 +2473,7 @@ function renderThemeScores(themeData) {
   }
 }
 
-/* ── Questions ratées ── */
+/* ── Missed questions ── */
 function renderMissed(missed) {
   const optLetters = ['A','B','C','D','E'];
   let html = '';
@@ -2169,7 +2481,7 @@ function renderMissed(missed) {
     const correctLabels = q.answer.map(i => `${optLetters[i]}. ${q.options[i]}`).join(', ');
     html += `<div class="missed-q">
       <div class="mq-text">Q${q.displayId}. ${q.text}</div>
-      <div class="mq-answer">✅ Bonne réponse : ${correctLabels}</div>
+      <div class="mq-answer">✅ Correct answer: ${correctLabels}</div>
       <div class="mq-expl">${q.expl.replace(/<[^>]*>/g, '')}</div>
     </div>`;
   });
@@ -2179,11 +2491,11 @@ function renderMissed(missed) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
-   NOUVEL EXAMEN
+   NEW EXAM
    ═══════════════════════════════════════════════════════════════════════ */
 function confirmNewExam() {
   if (!submitted) {
-    if (!confirm('Démarrer un nouvel examen ? Votre progression actuelle sera perdue.')) return;
+    if (!confirm('Start a new exam? Your current progress will be lost.')) return;
   }
   initExam();
   document.getElementById('scoreCard').style.display = 'none';
@@ -2191,6 +2503,175 @@ function confirmNewExam() {
   document.getElementById('missedSection').style.display = 'none';
   window.scrollTo(0, 0);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PERSISTENCE — Firebase (primary) / localStorage (fallback)
+   ═══════════════════════════════════════════════════════════════════════ */
+async function saveAttempt(stats) {
+  const attempt = {
+    name:            currentUser.name,
+    email:           currentUser.email,
+    mode:            currentMode,
+    score:           stats.correct,
+    total:           EXAM_SIZE,
+    percentage:      stats.pct,
+    passed:          stats.passed,
+    date:            new Date().toISOString(),
+    themeData:       stats.themeData,
+    failedQuestions: stats.failedQuestions,
+    countsForVoucher: TEST_MODES[currentMode].countsForVoucher,
+  };
+
+  // Firebase
+  if (window.__firebaseReady && window.__firebaseDb) {
+    try {
+      const col = window.__fbCollection(window.__firebaseDb, window.__fbCollectionName);
+      await window.__fbAddDoc(col, attempt);
+      return;
+    } catch(e) {
+      console.warn('Firebase write failed, using localStorage fallback:', e);
+    }
+  }
+
+  // localStorage fallback
+  const key = 'pspo_attempts';
+  const stored = JSON.parse(localStorage.getItem(key) || '[]');
+  stored.push(attempt);
+  localStorage.setItem(key, JSON.stringify(stored));
+}
+
+async function loadAttempts() {
+  // Firebase
+  if (window.__firebaseReady && window.__firebaseDb) {
+    try {
+      const col = window.__fbCollection(window.__firebaseDb, window.__fbCollectionName);
+      const snap = await window.__fbGetDocs(window.__fbQuery(col, window.__fbOrderBy('date', 'desc')));
+      return snap.docs.map(d => d.data());
+    } catch(e) {
+      console.warn('Firebase read failed, using localStorage:', e);
+    }
+  }
+  // localStorage fallback
+  return JSON.parse(localStorage.getItem('pspo_attempts') || '[]');
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ADMIN DASHBOARD LOGIC
+   ═══════════════════════════════════════════════════════════════════════ */
+async function loadAndRenderAdmin() {
+  document.getElementById('adminTableBody').innerHTML =
+    '<tr><td colspan="8" class="admin-empty">Loading results...</td></tr>';
+
+  allAttempts = await loadAttempts();
+  renderAdminStats();
+  renderAdminTable();
+}
+
+function computeEligibility(email) {
+  const examAttempts = allAttempts.filter(a =>
+    a.email === email && a.mode === 'exam' && a.passed && a.countsForVoucher
+  );
+  const eligible = examAttempts.length >= REQUIRED_PASSED_FULL_EXAMS;
+  const bestScore = examAttempts.length > 0
+    ? Math.max(...examAttempts.map(a => a.percentage))
+    : null;
+  return { eligible, passedExams: examAttempts.length, bestScore };
+}
+
+function renderAdminStats() {
+  const uniqueEmails = [...new Set(allAttempts.map(a => a.email))];
+  const examOnly = allAttempts.filter(a => a.mode === 'exam');
+  const avgScore = examOnly.length > 0
+    ? Math.round(examOnly.reduce((s, a) => s + a.percentage, 0) / examOnly.length)
+    : 0;
+  const eligibleCount = uniqueEmails.filter(e => computeEligibility(e).eligible).length;
+
+  document.getElementById('adminTotalAttempts').textContent = allAttempts.length;
+  document.getElementById('adminTotalUsers').textContent    = uniqueEmails.length;
+  document.getElementById('adminEligibleCount').textContent = eligibleCount;
+  document.getElementById('adminAvgScore').textContent      = examOnly.length > 0 ? avgScore + '%' : '—';
+}
+
+function setModeFilter(mode) {
+  adminModeFilter = mode;
+  ['All','Exam','Train','Quick'].forEach(m =>
+    document.getElementById('filter' + m).classList.toggle('active', 'all'===mode?m==='All':m.toLowerCase()===mode)
+  );
+  renderAdminTable();
+}
+
+function renderAdminTable() {
+  const search = (document.getElementById('adminSearchInput').value || '').toLowerCase();
+  let rows = allAttempts;
+
+  if (adminModeFilter !== 'all') rows = rows.filter(a => a.mode === adminModeFilter);
+  if (search) rows = rows.filter(a =>
+    (a.name || '').toLowerCase().includes(search) ||
+    (a.email || '').toLowerCase().includes(search)
+  );
+
+  if (rows.length === 0) {
+    document.getElementById('adminTableBody').innerHTML =
+      '<tr><td colspan="8" class="admin-empty">No results found.</td></tr>';
+    return;
+  }
+
+  const modeLabels = { exam: 'Full Exam', train: 'Training', quick: 'Quick Test' };
+
+  const html = rows.map(a => {
+    const { eligible } = computeEligibility(a.email);
+    const dateStr = a.date ? new Date(a.date).toLocaleDateString('en-GB', {
+      day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'
+    }) : '—';
+    return `<tr>
+      <td><strong>${escHtml(a.name || '—')}</strong></td>
+      <td style="color:var(--gray)">${escHtml(a.email || '—')}</td>
+      <td>${modeLabels[a.mode] || a.mode}</td>
+      <td>${a.score}/${a.total}</td>
+      <td><strong>${a.percentage}%</strong></td>
+      <td>${a.passed ? '<span class="passed-badge">PASSED</span>' : '<span class="failed-badge">FAILED</span>'}</td>
+      <td style="font-size:11px;color:var(--gray)">${dateStr}</td>
+      <td>${a.mode === 'exam'
+        ? (eligible ? '<span class="eligible-badge">✅ ELIGIBLE</span>' : '<span class="not-eligible-badge">Not yet</span>')
+        : '<span style="color:var(--gray);font-size:11px">N/A</span>'
+      }</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('adminTableBody').innerHTML = html;
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── CSV Export ── */
+function exportCSV() {
+  const headers = ['Name','Email','Mode','Score','Total','Percentage','Passed','Date','Voucher Eligible'];
+  const rows = allAttempts.map(a => {
+    const { eligible } = computeEligibility(a.email);
+    return [
+      a.name, a.email,
+      a.mode === 'exam' ? 'Full Exam' : a.mode === 'train' ? 'Training' : 'Quick Test',
+      a.score, a.total, a.percentage + '%',
+      a.passed ? 'YES' : 'NO',
+      a.date ? new Date(a.date).toLocaleDateString('en-GB') : '',
+      a.mode === 'exam' ? (eligible ? 'YES' : 'NO') : 'N/A'
+    ].map(v => `"${String(v || '').replace(/"/g, '""')}"`).join(',');
+  });
+
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'pspo_results_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+/* ── On page load: ensure start screen is shown ── */
+window.addEventListener('DOMContentLoaded', () => {
+  showScreen('start');
+});
 
 </script>
 </body>
