@@ -6,7 +6,7 @@
 <title>PSPO I Practice Simulator V3 — Converteo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════════
    CSS — Identique à la V1 + nouvelles classes V2
@@ -28,9 +28,32 @@
   --text: #1F2937;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8; color: var(--text); }
-h1, h2, h3, h4, h5, h6 { font-family: 'Syne', 'Segoe UI', Arial, sans-serif; }
-button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #F0F2F8;
+  color: var(--text);
+}
+
+h1, h2, h3, h4, h5, h6,
+.start-title,
+.mode-name,
+.header-left h1,
+.score-card h2,
+.theme-scores h3,
+.missed-section h3,
+.section-title,
+.modal-box h2,
+.confirm-box h3,
+.admin-header h1 {
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+button,
+.btn,
+.start-btn,
+.btn-submit-bottom {
+  font-family: 'Inter', sans-serif; }
 
 /* ── ÉCRAN DE DÉMARRAGE ── */
 #startScreen {
@@ -42,10 +65,10 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
   padding: 40px 20px;
   background: linear-gradient(135deg, var(--navy-dk) 0%, var(--purple-dk) 100%);
 }
-.start-brand { font-size: 11px; font-weight: 700; color: var(--teal); letter-spacing: 3px; margin-bottom: 24px; font-family: 'DM Sans', sans-serif; }
-.start-title { font-size: 42px; font-weight: 800; color: white; text-align: center; margin-bottom: 8px; font-family: 'Syne', sans-serif; }
+.start-brand { font-size: 11px; font-weight: 700; color: var(--teal); letter-spacing: 3px; margin-bottom: 24px; font-family: 'Inter', sans-serif; }
+.start-title { font-size: 42px; font-weight: 800; color: white; text-align: center; margin-bottom: 8px; font-family: 'Space Grotesk', sans-serif; }
 .start-title span { color: var(--teal); }
-.start-sub { font-size: 15px; color: #8B8ECA; text-align: center; margin-bottom: 48px; font-style: italic; font-family: 'DM Sans', sans-serif; }
+.start-sub { font-size: 15px; color: #8B8ECA; text-align: center; margin-bottom: 48px; font-style: italic; font-family: 'Inter', sans-serif; }
 .start-modes { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
 .mode-card {
   background: rgba(255,255,255,0.06);
@@ -60,8 +83,8 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 .mode-card:hover { border-color: var(--teal); background: rgba(0,178,178,0.08); transform: translateY(-3px); }
 .mode-card.selected { border-color: var(--teal); background: rgba(0,178,178,0.12); }
 .mode-icon { font-size: 40px; margin-bottom: 16px; }
-.mode-name { font-size: 18px; font-weight: 700; color: white; margin-bottom: 8px; font-family: 'Syne', sans-serif; }
-.mode-desc { font-size: 13px; color: #8B8ECA; line-height: 1.5; font-family: 'DM Sans', sans-serif; }
+.mode-name { font-size: 18px; font-weight: 700; color: white; margin-bottom: 8px; font-family: 'Space Grotesk', sans-serif; }
+.mode-desc { font-size: 13px; color: #8B8ECA; line-height: 1.5; font-family: 'Inter', sans-serif; }
 .start-btn {
   background: var(--teal);
   color: var(--navy-dk);
@@ -73,7 +96,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
   cursor: pointer;
   transition: all 0.2s;
   margin-bottom: 20px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   letter-spacing: 0.3px;
 }
 .start-btn:hover { background: #00CECE; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,178,178,0.3); }
@@ -87,10 +110,10 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 .header-inner { max-width: 1100px; margin: 0 auto; padding: 24px 40px; position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
 .header::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--teal); }
 .header::after { content: ''; position: absolute; right: -60px; top: -60px; width: 200px; height: 200px; background: var(--purple); border-radius: 50%; opacity: 0.3; }
-.header-left .brand { font-size: 10px; font-weight: 700; color: var(--teal); letter-spacing: 3px; margin-bottom: 4px; font-family: 'DM Sans', sans-serif; }
-.header-left h1 { font-size: 24px; font-weight: 700; color: white; font-family: 'Syne', sans-serif; }
+.header-left .brand { font-size: 10px; font-weight: 700; color: var(--teal); letter-spacing: 3px; margin-bottom: 4px; font-family: 'Inter', sans-serif; }
+.header-left h1 { font-size: 24px; font-weight: 700; color: white; font-family: 'Space Grotesk', sans-serif; }
 .header-left h1 span { color: var(--teal); }
-.header-left p { font-size: 12px; color: #8B8ECA; font-style: italic; margin-top: 2px; font-family: 'DM Sans', sans-serif; }
+.header-left p { font-size: 12px; color: #8B8ECA; font-style: italic; margin-top: 2px; font-family: 'Inter', sans-serif; }
 .meta-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .meta-badge { background: var(--purple); border-radius: 6px; padding: 5px 12px; font-size: 11px; font-weight: 700; color: white; display: flex; align-items: center; gap: 5px; }
 .meta-badge .val { color: var(--teal); font-size: 13px; }
@@ -107,7 +130,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 .progress-bar { height: 6px; background: #3D3B8E; border-radius: 3px; overflow: hidden; }
 .progress-fill { height: 100%; background: var(--teal); border-radius: 3px; transition: width 0.3s; }
 .progress-txt { font-size: 11px; color: #8B8ECA; margin-top: 4px; }
-.btn { padding: 7px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.2s; font-family: 'DM Sans', sans-serif; letter-spacing: 0.2px; }
+.btn { padding: 7px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.2s; font-family: 'Inter', sans-serif; letter-spacing: 0.2px; }
 .btn-primary { background: var(--teal); color: var(--navy-dk); }
 .btn-primary:hover { background: #00CECE; }
 .btn-secondary { background: var(--purple); color: white; }
@@ -124,7 +147,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 /* ── SCORE CARD ── */
 .score-card { display: none; background: var(--navy-dk); color: white; border-radius: 12px; padding: 40px; margin-bottom: 28px; text-align: center; border: 2px solid var(--teal); position: relative; overflow: hidden; }
 .score-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 70% 30%, #3D3B8E44 0%, transparent 60%); }
-.score-card h2 { font-size: 26px; margin-bottom: 8px; position: relative; font-family: 'Syne', sans-serif; font-weight: 700; }
+.score-card h2 { font-size: 26px; margin-bottom: 8px; position: relative; font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
 .score-big { font-size: 76px; font-weight: 900; color: var(--teal); line-height: 1; position: relative; }
 .score-pct { font-size: 18px; color: #8B8ECA; position: relative; margin: 6px 0 18px; }
 .score-details { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; position: relative; margin-bottom: 16px; }
@@ -137,7 +160,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 
 /* ── SCORE PAR THÈME ── */
 .theme-scores { display: none; background: white; border-radius: 12px; padding: 28px; margin-bottom: 28px; border: 1.5px solid var(--gray-bdr); box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
-.theme-scores h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; font-family: 'Syne', sans-serif; }
+.theme-scores h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; font-family: 'Space Grotesk', sans-serif; }
 .theme-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .theme-name { font-size: 12px; font-weight: 600; color: var(--text); width: 220px; flex-shrink: 0; }
 .theme-bar-wrap { flex: 1; height: 10px; background: var(--gray-lt); border-radius: 5px; overflow: hidden; }
@@ -149,7 +172,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 
 /* ── MISSED QUESTIONS ── */
 .missed-section { display: none; background: white; border-radius: 12px; padding: 28px; margin-bottom: 28px; border: 1.5px solid var(--red); }
-.missed-section h3 { font-size: 17px; font-weight: 700; color: var(--red); margin-bottom: 18px; font-family: 'Syne', sans-serif; }
+.missed-section h3 { font-size: 17px; font-weight: 700; color: var(--red); margin-bottom: 18px; font-family: 'Space Grotesk', sans-serif; }
 .missed-q { background: #FEF2F2; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--red); }
 .missed-q .mq-text { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
 .missed-q .mq-answer { font-size: 12px; color: var(--green); font-weight: 700; margin-bottom: 4px; }
@@ -158,7 +181,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 /* ── SECTIONS ── */
 .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; margin-top: 28px; }
 .section-num { background: var(--navy); color: white; font-weight: 800; font-size: 13px; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.section-title { font-size: 17px; font-weight: 700; color: var(--navy); font-family: 'Syne', sans-serif; }
+.section-title { font-size: 17px; font-weight: 700; color: var(--navy); font-family: 'Space Grotesk', sans-serif; }
 .section-line { flex: 1; height: 2px; background: var(--teal); opacity: 0.3; }
 
 /* ── QUESTION CARD ── */
@@ -175,7 +198,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 .diff-medium { background: #FEF9C3; color: #92400E; }
 .diff-hard { background: #FEE2E2; color: #991B1B; }
 .q-tag { font-size: 9.5px; font-weight: 700; background: var(--teal-lt); color: var(--navy); padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
-.q-text { font-size: 13.5px; line-height: 1.55; font-weight: 600; color: var(--text); font-family: 'DM Sans', sans-serif; }
+.q-text { font-size: 13.5px; line-height: 1.55; font-weight: 600; color: var(--text); font-family: 'Inter', sans-serif; }
 .q-note { font-size: 10.5px; color: var(--gray); font-style: italic; margin-top: 3px; font-weight: 400; }
 .q-options { padding: 2px 18px 14px 58px; display: flex; flex-direction: column; gap: 7px; }
 .option { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border-radius: 7px; border: 1.5px solid var(--gray-bdr); cursor: pointer; transition: all 0.15s; background: var(--gray-lt); font-size: 12.5px; line-height: 1.45; }
@@ -214,7 +237,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 .btn-submit-bottom {
   background: var(--teal);
   color: var(--navy-dk);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 15px;
   padding: 14px 56px;
@@ -241,10 +264,10 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
   background: var(--navy-dk); border: 2px solid var(--teal); border-radius: 16px;
   padding: 36px 40px; width: 440px; max-width: 90vw; text-align: center;
 }
-.confirm-box h3 { color: white; font-size: 20px; font-weight: 700; margin-bottom: 10px; font-family: 'Syne', sans-serif; }
-.confirm-box p { color: #8B8ECA; font-size: 13px; margin-bottom: 28px; line-height: 1.5; font-family: 'DM Sans', sans-serif; }
+.confirm-box h3 { color: white; font-size: 20px; font-weight: 700; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif; }
+.confirm-box p { color: #8B8ECA; font-size: 13px; margin-bottom: 28px; line-height: 1.5; font-family: 'Inter', sans-serif; }
 .confirm-actions { display: flex; gap: 12px; justify-content: center; }
-.confirm-actions .btn { font-size: 13px; padding: 10px 28px; font-family: 'DM Sans', sans-serif; }
+.confirm-actions .btn { font-size: 13px; padding: 10px 28px; font-family: 'Inter', sans-serif; }
 
 /* ── HOME CONFIRM MODAL ── */
 #homeConfirmModal {
@@ -260,7 +283,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 
 
 /* ── FOOTER ── */
-.footer-bar { background: var(--navy-dk); padding: 14px 40px; text-align: center; color: #6B6EA8; font-size: 11px; margin-top: 0; font-family: 'DM Sans', sans-serif; }
+.footer-bar { background: var(--navy-dk); padding: 14px 40px; text-align: center; color: #6B6EA8; font-size: 11px; margin-top: 0; font-family: 'Inter', sans-serif; }
 @media (max-width: 700px) {
   .main { padding: 12px; }
   .header-inner { padding: 16px; }
@@ -282,7 +305,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
   background: var(--navy-dk); border: 2px solid var(--teal); border-radius: 16px;
   padding: 40px; width: 420px; max-width: 90vw; text-align: center;
 }
-.modal-box h2 { color: white; font-size: 22px; font-weight: 700; margin-bottom: 6px; font-family: 'Syne', sans-serif; }
+.modal-box h2 { color: white; font-size: 22px; font-weight: 700; margin-bottom: 6px; font-family: 'Space Grotesk', sans-serif; }
 .modal-box p { color: #8B8ECA; font-size: 13px; margin-bottom: 24px; }
 .modal-input {
   width: 100%; padding: 12px 16px; border-radius: 8px;
@@ -310,7 +333,7 @@ button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 3px solid var(--teal);
 }
-.admin-header h1 { color: white; font-size: 20px; font-weight: 700; font-family: 'Syne', sans-serif; }
+.admin-header h1 { color: white; font-size: 20px; font-weight: 700; font-family: 'Space Grotesk', sans-serif; }
 .admin-header h1 span { color: var(--teal); }
 .admin-body { max-width: 1200px; margin: 0 auto; padding: 32px 40px; }
 .admin-stats { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
