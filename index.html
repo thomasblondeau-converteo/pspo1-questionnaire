@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PSPO I Practice Simulator V3 — Converteo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════════
    CSS — Identique à la V1 + nouvelles classes V2
@@ -25,7 +28,9 @@
   --text: #1F2937;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8; color: var(--text); }
+body { font-family: 'DM Sans', 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8; color: var(--text); }
+h1, h2, h3, h4, h5, h6 { font-family: 'Syne', 'Segoe UI', Arial, sans-serif; }
+button { font-family: 'DM Sans', 'Segoe UI', Arial, sans-serif; }
 
 /* ── ÉCRAN DE DÉMARRAGE ── */
 #startScreen {
@@ -37,10 +42,10 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
   padding: 40px 20px;
   background: linear-gradient(135deg, var(--navy-dk) 0%, var(--purple-dk) 100%);
 }
-.start-brand { font-size: 11px; font-weight: 700; color: var(--teal); letter-spacing: 3px; margin-bottom: 24px; }
-.start-title { font-size: 42px; font-weight: 900; color: white; text-align: center; margin-bottom: 8px; }
+.start-brand { font-size: 11px; font-weight: 700; color: var(--teal); letter-spacing: 3px; margin-bottom: 24px; font-family: 'DM Sans', sans-serif; }
+.start-title { font-size: 42px; font-weight: 800; color: white; text-align: center; margin-bottom: 8px; font-family: 'Syne', sans-serif; }
 .start-title span { color: var(--teal); }
-.start-sub { font-size: 15px; color: #8B8ECA; text-align: center; margin-bottom: 48px; font-style: italic; }
+.start-sub { font-size: 15px; color: #8B8ECA; text-align: center; margin-bottom: 48px; font-style: italic; font-family: 'DM Sans', sans-serif; }
 .start-modes { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
 .mode-card {
   background: rgba(255,255,255,0.06);
@@ -55,12 +60,12 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
 .mode-card:hover { border-color: var(--teal); background: rgba(0,178,178,0.08); transform: translateY(-3px); }
 .mode-card.selected { border-color: var(--teal); background: rgba(0,178,178,0.12); }
 .mode-icon { font-size: 40px; margin-bottom: 16px; }
-.mode-name { font-size: 18px; font-weight: 800; color: white; margin-bottom: 8px; }
-.mode-desc { font-size: 13px; color: #8B8ECA; line-height: 1.5; }
+.mode-name { font-size: 18px; font-weight: 700; color: white; margin-bottom: 8px; font-family: 'Syne', sans-serif; }
+.mode-desc { font-size: 13px; color: #8B8ECA; line-height: 1.5; font-family: 'DM Sans', sans-serif; }
 .start-btn {
   background: var(--teal);
   color: var(--navy-dk);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 16px;
   padding: 16px 48px;
   border-radius: 10px;
@@ -68,6 +73,8 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
   cursor: pointer;
   transition: all 0.2s;
   margin-bottom: 20px;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.3px;
 }
 .start-btn:hover { background: #00CECE; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,178,178,0.3); }
 .start-stats { display: flex; gap: 32px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
@@ -80,10 +87,10 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
 .header-inner { max-width: 1100px; margin: 0 auto; padding: 24px 40px; position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
 .header::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--teal); }
 .header::after { content: ''; position: absolute; right: -60px; top: -60px; width: 200px; height: 200px; background: var(--purple); border-radius: 50%; opacity: 0.3; }
-.header-left .brand { font-size: 10px; font-weight: 700; color: var(--teal); letter-spacing: 3px; margin-bottom: 4px; }
-.header-left h1 { font-size: 24px; font-weight: 800; color: white; }
+.header-left .brand { font-size: 10px; font-weight: 700; color: var(--teal); letter-spacing: 3px; margin-bottom: 4px; font-family: 'DM Sans', sans-serif; }
+.header-left h1 { font-size: 24px; font-weight: 700; color: white; font-family: 'Syne', sans-serif; }
 .header-left h1 span { color: var(--teal); }
-.header-left p { font-size: 12px; color: #8B8ECA; font-style: italic; margin-top: 2px; }
+.header-left p { font-size: 12px; color: #8B8ECA; font-style: italic; margin-top: 2px; font-family: 'DM Sans', sans-serif; }
 .meta-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .meta-badge { background: var(--purple); border-radius: 6px; padding: 5px 12px; font-size: 11px; font-weight: 700; color: white; display: flex; align-items: center; gap: 5px; }
 .meta-badge .val { color: var(--teal); font-size: 13px; }
@@ -100,7 +107,7 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
 .progress-bar { height: 6px; background: #3D3B8E; border-radius: 3px; overflow: hidden; }
 .progress-fill { height: 100%; background: var(--teal); border-radius: 3px; transition: width 0.3s; }
 .progress-txt { font-size: 11px; color: #8B8ECA; margin-top: 4px; }
-.btn { padding: 7px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 700; font-size: 12px; transition: all 0.2s; }
+.btn { padding: 7px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.2s; font-family: 'DM Sans', sans-serif; letter-spacing: 0.2px; }
 .btn-primary { background: var(--teal); color: var(--navy-dk); }
 .btn-primary:hover { background: #00CECE; }
 .btn-secondary { background: var(--purple); color: white; }
@@ -117,7 +124,7 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
 /* ── SCORE CARD ── */
 .score-card { display: none; background: var(--navy-dk); color: white; border-radius: 12px; padding: 40px; margin-bottom: 28px; text-align: center; border: 2px solid var(--teal); position: relative; overflow: hidden; }
 .score-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 70% 30%, #3D3B8E44 0%, transparent 60%); }
-.score-card h2 { font-size: 26px; margin-bottom: 8px; position: relative; }
+.score-card h2 { font-size: 26px; margin-bottom: 8px; position: relative; font-family: 'Syne', sans-serif; font-weight: 700; }
 .score-big { font-size: 76px; font-weight: 900; color: var(--teal); line-height: 1; position: relative; }
 .score-pct { font-size: 18px; color: #8B8ECA; position: relative; margin: 6px 0 18px; }
 .score-details { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; position: relative; margin-bottom: 16px; }
@@ -130,7 +137,7 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
 
 /* ── SCORE PAR THÈME ── */
 .theme-scores { display: none; background: white; border-radius: 12px; padding: 28px; margin-bottom: 28px; border: 1.5px solid var(--gray-bdr); box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
-.theme-scores h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+.theme-scores h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; font-family: 'Syne', sans-serif; }
 .theme-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .theme-name { font-size: 12px; font-weight: 600; color: var(--text); width: 220px; flex-shrink: 0; }
 .theme-bar-wrap { flex: 1; height: 10px; background: var(--gray-lt); border-radius: 5px; overflow: hidden; }
@@ -142,7 +149,7 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
 
 /* ── MISSED QUESTIONS ── */
 .missed-section { display: none; background: white; border-radius: 12px; padding: 28px; margin-bottom: 28px; border: 1.5px solid var(--red); }
-.missed-section h3 { font-size: 17px; font-weight: 800; color: var(--red); margin-bottom: 18px; }
+.missed-section h3 { font-size: 17px; font-weight: 700; color: var(--red); margin-bottom: 18px; font-family: 'Syne', sans-serif; }
 .missed-q { background: #FEF2F2; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--red); }
 .missed-q .mq-text { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
 .missed-q .mq-answer { font-size: 12px; color: var(--green); font-weight: 700; margin-bottom: 4px; }
@@ -151,7 +158,7 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
 /* ── SECTIONS ── */
 .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; margin-top: 28px; }
 .section-num { background: var(--navy); color: white; font-weight: 800; font-size: 13px; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.section-title { font-size: 17px; font-weight: 700; color: var(--navy); }
+.section-title { font-size: 17px; font-weight: 700; color: var(--navy); font-family: 'Syne', sans-serif; }
 .section-line { flex: 1; height: 2px; background: var(--teal); opacity: 0.3; }
 
 /* ── QUESTION CARD ── */
@@ -168,7 +175,7 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
 .diff-medium { background: #FEF9C3; color: #92400E; }
 .diff-hard { background: #FEE2E2; color: #991B1B; }
 .q-tag { font-size: 9.5px; font-weight: 700; background: var(--teal-lt); color: var(--navy); padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
-.q-text { font-size: 13.5px; line-height: 1.55; font-weight: 600; color: var(--text); }
+.q-text { font-size: 13.5px; line-height: 1.55; font-weight: 600; color: var(--text); font-family: 'DM Sans', sans-serif; }
 .q-note { font-size: 10.5px; color: var(--gray); font-style: italic; margin-top: 3px; font-weight: 400; }
 .q-options { padding: 2px 18px 14px 58px; display: flex; flex-direction: column; gap: 7px; }
 .option { display: flex; align-items: flex-start; gap: 9px; padding: 9px 12px; border-radius: 7px; border: 1.5px solid var(--gray-bdr); cursor: pointer; transition: all 0.15s; background: var(--gray-lt); font-size: 12.5px; line-height: 1.45; }
@@ -196,10 +203,64 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
 .flag-btn:hover { background: var(--gray-lt); }
 .flag-btn.flagged { color: var(--gold); }
 
-/* ── FOOTER ── */
-.footer-bar { background: var(--navy-dk); padding: 14px 40px; text-align: center; color: #6B6EA8; font-size: 11px; margin-top: 40px; }
+/* ── BOTTOM SUBMIT BUTTON ── */
+.bottom-submit-wrap {
+  max-width: 1100px;
+  margin: 32px auto 0;
+  padding: 0 40px 40px;
+  display: flex;
+  justify-content: center;
+}
+.btn-submit-bottom {
+  background: var(--teal);
+  color: var(--navy-dk);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 14px 56px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 18px rgba(0,178,178,0.25);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-submit-bottom:hover { background: #00CECE; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,178,178,0.35); }
+.btn-submit-bottom:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-/* ── RESPONSIVE ── */
+/* ── CONFIRMATION MODAL ── */
+#confirmModal {
+  display: none; position: fixed; inset: 0; z-index: 1500;
+  background: rgba(0,0,0,0.72); align-items: center; justify-content: center;
+}
+#confirmModal.show { display: flex; }
+.confirm-box {
+  background: var(--navy-dk); border: 2px solid var(--teal); border-radius: 16px;
+  padding: 36px 40px; width: 440px; max-width: 90vw; text-align: center;
+}
+.confirm-box h3 { color: white; font-size: 20px; font-weight: 700; margin-bottom: 10px; font-family: 'Syne', sans-serif; }
+.confirm-box p { color: #8B8ECA; font-size: 13px; margin-bottom: 28px; line-height: 1.5; font-family: 'DM Sans', sans-serif; }
+.confirm-actions { display: flex; gap: 12px; justify-content: center; }
+.confirm-actions .btn { font-size: 13px; padding: 10px 28px; font-family: 'DM Sans', sans-serif; }
+
+/* ── HOME CONFIRM MODAL ── */
+#homeConfirmModal {
+  display: none; position: fixed; inset: 0; z-index: 1500;
+  background: rgba(0,0,0,0.72); align-items: center; justify-content: center;
+}
+#homeConfirmModal.show { display: flex; }
+
+@media (max-width: 700px) {
+  .bottom-submit-wrap { padding: 0 12px 32px; }
+  .btn-submit-bottom { width: 100%; justify-content: center; }
+}
+
+
+/* ── FOOTER ── */
+.footer-bar { background: var(--navy-dk); padding: 14px 40px; text-align: center; color: #6B6EA8; font-size: 11px; margin-top: 0; font-family: 'DM Sans', sans-serif; }
 @media (max-width: 700px) {
   .main { padding: 12px; }
   .header-inner { padding: 16px; }
@@ -221,7 +282,7 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
   background: var(--navy-dk); border: 2px solid var(--teal); border-radius: 16px;
   padding: 40px; width: 420px; max-width: 90vw; text-align: center;
 }
-.modal-box h2 { color: white; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.modal-box h2 { color: white; font-size: 22px; font-weight: 700; margin-bottom: 6px; font-family: 'Syne', sans-serif; }
 .modal-box p { color: #8B8ECA; font-size: 13px; margin-bottom: 24px; }
 .modal-input {
   width: 100%; padding: 12px 16px; border-radius: 8px;
@@ -249,7 +310,7 @@ body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; background: #F0F2F8;
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 3px solid var(--teal);
 }
-.admin-header h1 { color: white; font-size: 20px; font-weight: 800; }
+.admin-header h1 { color: white; font-size: 20px; font-weight: 700; font-family: 'Syne', sans-serif; }
 .admin-header h1 span { color: var(--teal); }
 .admin-body { max-width: 1200px; margin: 0 auto; padding: 32px 40px; }
 .admin-stats { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
@@ -423,7 +484,6 @@ window.__fbCollectionName = "pspo_attempts";
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px;z-index:2">
         <div style="display:flex;align-items:center;gap:10px">
-          <button class="home-btn" onclick="goHome()">🏠 Home</button>
           <span class="mode-badge" id="modeBadge">FULL EXAM</span>
         </div>
         <div class="meta-row">
@@ -483,10 +543,45 @@ window.__fbCollectionName = "pspo_attempts";
 
     <!-- Questions -->
     <div id="questionsContainer"></div>
+
+    <!-- Bottom Submit Button -->
+    <div class="bottom-submit-wrap" id="bottomSubmitWrap">
+      <button class="btn-submit-bottom" id="bottomSubmitBtn" onclick="requestSubmit()">
+        ✅ Submit Exam
+      </button>
+    </div>
   </div>
 
   <div class="footer-bar">
     Converteo · PSPO I Practice Simulator V3 · Based on The Scrum Guide 2020 (scrumguides.org) · <span id="footerMode"></span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SUBMIT CONFIRMATION MODAL
+     ═══════════════════════════════════════════════════════════ -->
+<div id="confirmModal">
+  <div class="confirm-box">
+    <h3>⚠️ Unanswered Questions</h3>
+    <p id="confirmMsg">You have unanswered questions. Are you sure you want to submit your exam?</p>
+    <div class="confirm-actions">
+      <button class="btn btn-secondary" onclick="closeConfirmModal()">Go back</button>
+      <button class="btn btn-danger" onclick="confirmSubmit()">Submit anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HOME CONFIRM MODAL
+     ═══════════════════════════════════════════════════════════ -->
+<div id="homeConfirmModal">
+  <div class="confirm-box">
+    <h3>🏠 Leave this test?</h3>
+    <p>Are you sure you want to leave this test? Your progress will be lost.</p>
+    <div class="confirm-actions">
+      <button class="btn btn-secondary" onclick="closeHomeConfirmModal()">Keep going</button>
+      <button class="btn btn-danger" onclick="confirmGoHome()">Leave test</button>
+    </div>
   </div>
 </div>
 
@@ -1967,10 +2062,44 @@ function showScreen(screen) {
 
 function goHome() {
   if (!submitted && examQuestions.length > 0) {
-    if (!confirm('Return to home? Your current exam progress will be lost.')) return;
+    document.getElementById('homeConfirmModal').classList.add('show');
+    return;
   }
   clearInterval(timerInterval);
   showScreen('start');
+}
+
+function closeHomeConfirmModal() {
+  document.getElementById('homeConfirmModal').classList.remove('show');
+}
+
+function confirmGoHome() {
+  closeHomeConfirmModal();
+  clearInterval(timerInterval);
+  showScreen('start');
+}
+
+/* ── Bottom submit + confirmation logic ── */
+function requestSubmit() {
+  if (submitted) return;
+  const answered = Object.keys(answers).filter(k => answers[k] && answers[k].length > 0).length;
+  const unanswered = EXAM_SIZE - answered;
+  if (unanswered > 0) {
+    document.getElementById('confirmMsg').textContent =
+      `You have ${unanswered} unanswered question${unanswered > 1 ? 's' : ''}. Are you sure you want to submit your exam?`;
+    document.getElementById('confirmModal').classList.add('show');
+  } else {
+    submitExam();
+  }
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirmModal').classList.remove('show');
+}
+
+function confirmSubmit() {
+  closeConfirmModal();
+  submitExam();
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -2119,6 +2248,10 @@ function initExam() {
   reviewMode = false;
 
   examQuestions = drawExam();
+
+  // Reset bottom submit button
+  const bottomBtn = document.getElementById('bottomSubmitBtn');
+  if (bottomBtn) { bottomBtn.disabled = false; bottomBtn.innerHTML = '✅ Submit Exam'; }
 
   document.getElementById('scoreCard').style.display = 'none';
   document.getElementById('themeScores').style.display = 'none';
@@ -2311,6 +2444,10 @@ function submitExam() {
   if (submitted) return;
   submitted = true;
   clearInterval(timerInterval);
+
+  // Hide bottom submit button after submission
+  const bottomBtn = document.getElementById('bottomSubmitBtn');
+  if (bottomBtn) { bottomBtn.disabled = true; bottomBtn.textContent = '✅ Submitted'; }
 
   let correct = 0, wrong = 0, skipped = 0;
   const themeData = {};
